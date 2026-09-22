@@ -1,0 +1,28 @@
+# secrets / env
+.env
+
+# third-party data cache (never commit licensed data — R5)
+data/raw/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# local dev databases
+*.db
+*.sqlite3
+
+# frontend (Phase 11)
+node_modules/
+
+# harness internals
+.zcode/

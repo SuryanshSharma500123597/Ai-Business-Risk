@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: abr
+      POSTGRES_PASSWORD: abr
+      POSTGRES_DB: abr
+    ports:
+      - "5432:5432"
+    volumes:
+      - abr_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U abr -d abr"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://abr:abr@db:5432/abr
+      LLM_PROVIDER: glm
+      LOG_LEVEL: INFO
+      DATA_CACHE_DIR: /app/data/raw
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # frontend:  # added in Phase 11 (React + Vite + TS)
+  #   build: ./frontend
+
+volumes:
+  abr_pgdata:
