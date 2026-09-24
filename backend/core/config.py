@@ -33,6 +33,10 @@ class Settings(BaseSettings):
 
     fred_api_key: str = ""
 
+    # EDGAR secondary ingestion (frozen data.md FD-2: feature-flagged, off by default)
+    enable_edgar: bool = False
+    edgar_user_agent: str = "AI-Business-Risk-Research contact@example.com"
+
     data_cache_dir: str = "data/raw"
 
     run_budget_tokens: int = 200_000

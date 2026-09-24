@@ -3,6 +3,8 @@
 
 # third-party data cache (never commit licensed data — R5)
 data/raw/
+# generated synthetic datasets (reproducible from seeds — never commit)
+data/synthetic/
 
 # python
 __pycache__/
