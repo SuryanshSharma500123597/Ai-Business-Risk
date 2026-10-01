@@ -8,11 +8,12 @@ names; duplicate data models are not permitted.
 from __future__ import annotations
 
 import hashlib
+import math
 from datetime import date
 from enum import StrEnum
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class Sector(StrEnum):
@@ -153,6 +154,13 @@ class ShareEntry(BaseModel):
     name: str | None = None
     share: float = Field(ge=0.0, le=1.0)
 
+    @field_validator("share", mode="after")
+    @classmethod
+    def _finite_share(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("share must be finite")
+        return value
+
     @model_validator(mode="after")
     def _check_label(self) -> ShareEntry:
         if not (self.name_hash or self.name):
@@ -168,6 +176,13 @@ class FxExposure(BaseModel):
     foreign_revenue_share: float = Field(default=0.0, ge=0.0, le=1.0)
     import_cost_share: float = Field(default=0.0, ge=0.0, le=1.0)
 
+    @field_validator("foreign_revenue_share", "import_cost_share", mode="after")
+    @classmethod
+    def _finite_share(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("exposure share must be finite")
+        return value
+
 
 class CommodityExposure(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -175,11 +190,25 @@ class CommodityExposure(BaseModel):
     input: str
     cost_share: float = Field(ge=0.0, le=1.0)
 
+    @field_validator("cost_share", mode="after")
+    @classmethod
+    def _finite_share(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("cost share must be finite")
+        return value
+
 
 class RateExposure(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     floating_debt_share: float = Field(default=0.5, ge=0.0, le=1.0)
+
+    @field_validator("floating_debt_share", mode="after")
+    @classmethod
+    def _finite_share(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("floating debt share must be finite")
+        return value
 
 
 class DebtScheduleEntry(BaseModel):
@@ -187,6 +216,13 @@ class DebtScheduleEntry(BaseModel):
 
     bucket: Literal["0-3m", "3-12m", "1-3y", "3y+"]
     amount: float = Field(ge=0.0)
+
+    @field_validator("amount", mode="after")
+    @classmethod
+    def _finite_amount(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("debt amount must be finite")
+        return value
 
 
 class PeriodFinancials(BaseModel):
@@ -241,6 +277,23 @@ class PeriodFinancials(BaseModel):
     rate_exposure: RateExposure | None = None
     debt_schedule: list[DebtScheduleEntry] | None = None
 
+    @field_validator(*NUMERIC_CONCEPT_FIELDS, mode="after")
+    @classmethod
+    def _finite_numeric(cls, value: object) -> object:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("numeric financial values must be finite")
+        return value
+
+    @model_validator(mode="after")
+    def _valid_period_calendar_fields(self) -> PeriodFinancials:
+        # Ordering is evaluated at dataset level so malformed source rows can
+        # be loaded and reported together rather than failing one row early.
+        if self.quarter is not None and self.quarter not in (1, 2, 3, 4):
+            raise ValueError("quarter must be between 1 and 4")
+        if self.frequency is Frequency.ANNUAL and self.quarter is not None:
+            raise ValueError("annual periods must not have a quarter")
+        return self
+
 
 class CompanyProfile(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -278,7 +331,7 @@ class SyntheticCompanyConfig(BaseModel):
     seasonality: bool | None = None  # None => sector default (retail: on)
     concentration: ConcentrationProfile = ConcentrationProfile.MODERATE
     inject_anomalies: list[AnomalyInjection] = Field(default_factory=list)
-    seed: int
+    seed: int = Field(ge=0)
 
     @model_validator(mode="after")
     def _resolve_defaults(self) -> SyntheticCompanyConfig:
@@ -288,6 +341,12 @@ class SyntheticCompanyConfig(BaseModel):
             raise ValueError("annual frequency requires 3..10 periods (years)")
         if self.frequency == Frequency.MONTHLY and not (12 <= self.periods <= 36):
             raise ValueError("monthly frequency requires 12..36 periods")
+        if self.frequency is Frequency.QUARTERLY:
+            raise ValueError("quarterly synthetic generation is not supported")
+        horizon_months = self.periods * (12 if self.frequency is Frequency.ANNUAL else 1)
+        for injection in self.inject_anomalies:
+            if injection.start_month + injection.duration_months - 1 > horizon_months:
+                raise ValueError("anomaly window must fit within the configured periods")
         return self
 
     @property
@@ -297,11 +356,20 @@ class SyntheticCompanyConfig(BaseModel):
         return self.sector == Sector.RETAIL
 
 
-class GeneratedCompany(BaseModel):
-    """Generator output: profile + ordered periods."""
+class CompanyDataset(BaseModel):
+    """Source-neutral company dataset shared by ingestion and storage."""
+
+    model_config = ConfigDict(extra="forbid")
 
     profile: CompanyProfile
     periods: list[PeriodFinancials]
+    generator_config: SyntheticCompanyConfig | None = None
+    edgar_cik: str | None = None
+
+
+class GeneratedCompany(CompanyDataset):
+    """Generator output: a dataset with its reproducibility configuration."""
+
     generator_config: SyntheticCompanyConfig
 
     @property
@@ -314,15 +382,44 @@ class CoverageIssue(BaseModel):
     detail: str
 
 
+class QualityIssue(BaseModel):
+    """Typed data-quality finding; errors block storage, warnings do not."""
+
+    severity: Literal["error", "warning", "info"]
+    code: str
+    detail: str
+    period_index: int | None = None
+
+
 class ValidationReport(BaseModel):
-    """Result of the frozen validation rules (data.md §3)."""
+    """Result of coverage and all-period data-quality validation."""
 
     required_pct: float = Field(ge=0.0, le=100.0)
     optional_pct: float = Field(ge=0.0, le=100.0)
     missing_required: list[CoverageIssue] = Field(default_factory=list)
     missing_optional: list[CoverageIssue] = Field(default_factory=list)
+    issues: list[QualityIssue] = Field(default_factory=list)
+    # Kept for callers of the original helper API. New code should inspect issues.
     warnings: list[str] = Field(default_factory=list)
     blocked: bool = False
+
+    @property
+    def errors(self) -> list[QualityIssue]:
+        return [issue for issue in self.issues if issue.severity == "error"]
+
+    @property
+    def infos(self) -> list[QualityIssue]:
+        return [issue for issue in self.issues if issue.severity == "info"]
+
+    @property
+    def typed_warnings(self) -> list[QualityIssue]:
+        return [issue for issue in self.issues if issue.severity == "warning"]
+
+    @model_validator(mode="after")
+    def _errors_block(self) -> ValidationReport:
+        if any(issue.severity == "error" for issue in self.issues):
+            self.blocked = True
+        return self
 
     @property
     def summary(self) -> dict[str, Any]:
@@ -331,5 +428,6 @@ class ValidationReport(BaseModel):
             "optional_pct": self.optional_pct,
             "missing_required": [i.concept for i in self.missing_required],
             "warnings": self.warnings,
+            "issues": [issue.model_dump() for issue in self.issues],
             "blocked": self.blocked,
         }

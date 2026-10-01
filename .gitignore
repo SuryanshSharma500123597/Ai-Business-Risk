@@ -1,5 +1,7 @@
 # secrets / env
 .env
+.env.*
+!.env.example
 
 # third-party data cache (never commit licensed data — R5)
 data/raw/
@@ -26,5 +28,30 @@ htmlcov/
 # frontend (Phase 11)
 node_modules/
 
-# harness internals
+# harness internals / AI tooling (NOT part of the published project)
 .zcode/
+__agent__/
+.agent/
+Skills/
+skills/
+
+# IDEs / editors
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# logs
+*.log
+
+# local dev databases (sqlite variants)
+*.sqlite
+
+# virtualenv aliases
+venv/
+env/

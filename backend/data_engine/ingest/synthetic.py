@@ -141,6 +141,13 @@ def _month_start(year: int, month: int) -> date:
     return date(year, month, 1)
 
 
+def _sum_present_flow(periods: list[PeriodFinancials], field: str) -> float | None:
+    values = [getattr(period, field) for period in periods]
+    if any(value is None for value in values):
+        return None
+    return sum(value for value in values if value is not None)
+
+
 def _draw_shares(rng: np.random.Generator, n: int, alpha: float) -> list[float]:
     """Dirichlet-drawn shares, rounded to 4 dp and re-normalized to sum≈1."""
     raw = rng.dirichlet(np.full(n, alpha))
@@ -398,9 +405,11 @@ def _aggregate_annual(monthly: list[PeriodFinancials]) -> list[PeriodFinancials]
             "ocf",
             "fcf",
         )
-        aggregated = {f: sum(getattr(p, f) or 0.0 for p in chunk) for f in flow_fields}
-        # annual gross_profit identity: recompute as revenue - cogs
-        aggregated["gross_profit"] = aggregated["revenue"] - aggregated["cogs"]
+
+        aggregated = {f: _sum_present_flow(chunk, f) for f in flow_fields}
+        # annual gross_profit identity: recompute when both operands exist
+        if aggregated["revenue"] is not None and aggregated["cogs"] is not None:
+            aggregated["gross_profit"] = aggregated["revenue"] - aggregated["cogs"]
         stock_fields = (
             "cash",
             "receivables",

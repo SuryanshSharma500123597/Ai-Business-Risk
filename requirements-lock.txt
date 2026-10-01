@@ -1,5 +1,5 @@
-# Editable Git install with no remote (ai-business-risk==0.1.0)
--e e:\ai business risk
+# Editable install of this project (ai-business-risk==0.1.0)
+-e .
 alembic==1.20.0
 annotated-doc==0.0.5
 annotated-types==0.8.0

@@ -7,7 +7,7 @@ for a single business and propagates user-defined or AI-translated scenarios thr
 business digital twin. LLM agents orchestrate and narrate; **every number comes from deterministic,
 tested engines** (quantitative risk engine, ML anomaly detector, business digital twin).
 
-**Status:** Phase 1 — Architecture Freeze (documentation only; no application code exists yet).
+**Status:** Phase 4 — Quantitative Risk Engine is **engineering-complete and documentation-closed** (Stage 5 D18–D21 approved; see [04_quantitative-risk/phase-report.md](../04_quantitative-risk/phase-report.md)). Phases 0–3 are complete/approved. **Phase 5 — ML Engine is next and has not started.** The architecture remains frozen; the frozen Phase 1 contracts below are unchanged.
 
 ## What it does
 

@@ -8,9 +8,10 @@ to the coverage report.
 
 from __future__ import annotations
 
+import math
 from datetime import date
 
-from backend.data_engine.contracts import PeriodFinancials
+from backend.data_engine.contracts import DebtScheduleEntry, PeriodFinancials
 
 # Fields scaled by the FX rate. Flow and stock money fields only —
 # shares/ratios/exposures are dimensionless and never converted.
@@ -26,12 +27,19 @@ def validate_currency(code: str) -> str:
     return upper
 
 
+def _validate_rates(fx_series: dict[date, float]) -> None:
+    for observed_date, rate in fx_series.items():
+        if not math.isfinite(rate) or rate <= 0:
+            raise ValueError(f"fx rate on {observed_date} must be finite and positive")
+
+
 def as_of_rate(fx_series: dict[date, float], on: date, *, fill: str = "previous") -> float | None:
     """Rate for the latest series date ≤ `on` (previous-carry default).
 
     fx_series maps date → rate quoted as TARGET currency per 1 unit of BASE
     currency (e.g., DEXINUS: INR per USD).
     """
+    _validate_rates(fx_series)
     if not fx_series:
         return None
     eligible = [d for d in fx_series if d <= on]
@@ -45,16 +53,26 @@ def as_of_rate(fx_series: dict[date, float], on: date, *, fill: str = "previous"
 
 def convert_period(period: PeriodFinancials, rate: float) -> PeriodFinancials:
     """Scale all money fields by `rate` (target-per-base quote)."""
-    if rate <= 0:
-        raise ValueError(f"fx rate must be positive, got {rate}")
+    if not math.isfinite(rate) or rate <= 0:
+        raise ValueError(f"fx rate must be finite and positive, got {rate}")
     updates: dict[str, float] = {}
     for field in (*FLOW_FIELDS, *STOCK_FIELDS):
         value = getattr(period, field)
         if value is not None:
             updates[field] = value * rate
+    # Debt schedules are monetary amounts too; do not leave them in the base
+    # currency while the scalar debt fields are translated.
+    converted_schedule = None
+    if period.debt_schedule is not None:
+        converted_schedule = [
+            DebtScheduleEntry(bucket=entry.bucket, amount=entry.amount * rate)
+            for entry in period.debt_schedule
+        ]
     # gross margin identity is scale-invariant but recompute for exactness
     if "revenue" in updates and "cogs" in updates:
         updates["gross_profit"] = updates["revenue"] - updates["cogs"]
+    if converted_schedule is not None:
+        return period.model_copy(update={**updates, "debt_schedule": converted_schedule})
     return period.model_copy(update=updates)
 
 
@@ -71,6 +89,7 @@ def convert_series(
     converted: list[PeriodFinancials] = []
     if not fx_series:
         return list(periods), ["empty fx series: no conversion applied"]
+    _validate_rates(fx_series)
     earliest = min(fx_series)
     for p in periods:
         rate = as_of_rate(fx_series, p.period_end)

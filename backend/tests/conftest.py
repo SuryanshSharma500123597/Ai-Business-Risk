@@ -21,6 +21,28 @@ from backend.core.config import get_settings  # noqa: E402
 from backend.database.models import Base  # noqa: E402
 from backend.database.session import reset_engine_cache  # noqa: E402
 
+GOLDEN_UPDATE_OPTION = "--regen-golden"
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """Register ``--regen-golden`` (testing.md §4).
+
+    Golden files are committed JSON and are regenerated *only* through this flag,
+    with the regeneration diff reviewed and noted in the development log.
+    """
+    parser.addoption(
+        GOLDEN_UPDATE_OPTION,
+        action="store_true",
+        default=False,
+        help="Regenerate the committed golden baselines in backend/tests/golden/.",
+    )
+
+
+@pytest.fixture()
+def regen_golden(request: pytest.FixtureRequest) -> bool:
+    """True when the run was invoked with ``--regen-golden``."""
+    return bool(request.config.getoption(GOLDEN_UPDATE_OPTION))
+
 
 @pytest.fixture(autouse=True)
 def _isolated_settings(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:

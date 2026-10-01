@@ -59,9 +59,12 @@ def sort_periods(periods: list[PeriodFinancials]) -> list[PeriodFinancials]:
 
 
 def infer_frequency(periods: list[PeriodFinancials]) -> Frequency | None:
-    """Infer frequency from median month gap between consecutive period ends."""
+    """Infer frequency from declarations and median calendar spacing."""
     if len(periods) < 2:
         return None
+    declared = {Frequency(period.frequency) for period in periods}
+    if len(declared) == 1 and next(iter(declared)) is not Frequency.MONTHLY:
+        return next(iter(declared))
     gaps = sorted(
         (b.period_end.year - a.period_end.year) * 12 + (b.period_end.month - a.period_end.month)
         for a, b in zip(periods, periods[1:], strict=False)
@@ -74,13 +77,24 @@ def infer_frequency(periods: list[PeriodFinancials]) -> Frequency | None:
     return Frequency.ANNUAL
 
 
-def find_gaps(periods: list[PeriodFinancials]) -> list[tuple[date, date]]:
-    """Missing spans between consecutive periods (for disclosure)."""
+def find_gaps(
+    periods: list[PeriodFinancials], frequency: Frequency | None = None
+) -> list[tuple[date, date]]:
+    """Missing spans between consecutive periods, respecting calendar frequency."""
+    ordered = sort_periods(periods)
+    if len(ordered) < 2:
+        return []
+    selected_frequency = (
+        Frequency(frequency)
+        if frequency is not None
+        else (infer_frequency(ordered) or Frequency(ordered[0].frequency))
+    )
+    step = _STEP_BY_FREQUENCY[selected_frequency]
     gaps: list[tuple[date, date]] = []
-    for prev, cur in zip(periods, periods[1:], strict=False):
+    for prev, cur in zip(ordered, ordered[1:], strict=False):
         month_index = prev.period_end.year * 12 + prev.period_end.month
         next_index = cur.period_end.year * 12 + cur.period_end.month
-        if next_index != month_index + 1:
+        if next_index != month_index + step:
             gaps.append((prev.period_end, cur.period_end))
     return gaps
 
@@ -104,11 +118,21 @@ def chunk_by_step(
 def aggregate_chunk(chunk: list[PeriodFinancials], target: Frequency) -> PeriodFinancials:
     """Aggregate a chunk of monthly periods to the target frequency."""
     last = chunk[-1]
-    flows = {f: sum(getattr(p, f) or 0.0 for p in chunk) for f in FLOW_FIELDS}
-    # recompute additive identity after summation
-    flows["gross_profit"] = flows["revenue"] - flows["cogs"]
+
+    def sum_flow(field: str) -> float | None:
+        values = [getattr(p, field) for p in chunk]
+        # Missing observations are not zero observations. Preserve the missing
+        # concept so coverage and downstream dimensions can degrade honestly.
+        if any(value is None for value in values):
+            return None
+        return sum(value for value in values if value is not None)
+
+    flows = {f: sum_flow(f) for f in FLOW_FIELDS}
+    # recompute additive identity only when both operands are available
+    if flows["revenue"] is not None and flows["cogs"] is not None:
+        flows["gross_profit"] = flows["revenue"] - flows["cogs"]
     stocks = {f: getattr(last, f) for f in STOCK_FIELDS}
-    fiscal_year = last.period_end.year if target is Frequency.ANNUAL else None
+    fiscal_year = last.period_end.year if target is Frequency.ANNUAL else last.fiscal_year
     quarter = (last.period_end.month - 1) // 3 + 1 if target is Frequency.QUARTERLY else None
     return last.model_copy(
         update={
@@ -124,7 +148,7 @@ def aggregate_chunk(chunk: list[PeriodFinancials], target: Frequency) -> PeriodF
 
 
 def to_frequency(
-    periods: list[PeriodFinancials], target: Frequency
+    periods: list[PeriodFinancials], target: Frequency | str
 ) -> tuple[list[PeriodFinancials], list[str]]:
     """Normalize monthly periods to quarterly/annual (or pass through sorted).
 
@@ -132,20 +156,60 @@ def to_frequency(
     supported (a note records the request instead of inventing data).
     """
     notes: list[str] = []
+    target = Frequency(target)
     ordered = sort_periods(periods)
-    source = infer_frequency(ordered)
-    if source is not Frequency.MONTHLY:
-        notes.append(f"source frequency {source}: only monthly input is aggregated")
-        return ordered, notes
+    if not ordered:
+        return [], notes
+    source = infer_frequency(ordered) or Frequency(ordered[0].frequency)
     if target is Frequency.MONTHLY:
+        if source is not Frequency.MONTHLY:
+            notes.append(f"source frequency {source}: cannot expand to monthly without source data")
+        return ordered, notes
+    if source is target:
+        if source is not Frequency.MONTHLY:
+            notes.append(f"source frequency {source}: only monthly input is aggregated")
+        return ordered, notes
+    source_months = _STEP_BY_FREQUENCY[source]
+    target_months = _STEP_BY_FREQUENCY[target]
+    if source_months > target_months:
+        notes.append(f"source frequency {source}: cannot expand to {target} without source data")
+        return ordered, notes
+    if target_months % source_months:
+        notes.append(f"cannot align {source} periods to {target}")
         return ordered, notes
 
-    step = _STEP_BY_FREQUENCY[target]
-    chunks = chunk_by_step(ordered, step)
-    if len(chunks[-1]) != step:
-        notes.append(f"trailing partial chunk dropped ({len(chunks[-1])} period(s))")
-        chunks = chunks[:-1]
-    return [aggregate_chunk(c, target) for c in chunks], notes
+    # Group by calendar labels, not by arbitrary list position. This prevents
+    # a missing month/quarter from shifting every subsequent fiscal bucket.
+    keys: list[tuple[int, ...]]
+    if target is Frequency.QUARTERLY:
+        keys = [(p.period_end.year, (p.period_end.month - 1) // 3 + 1) for p in ordered]
+    else:
+        keys = [(p.period_end.year,) for p in ordered]
+    grouped: list[list[PeriodFinancials]] = []
+    current_key: tuple[int, ...] | None = None
+    for key, period in zip(keys, ordered, strict=True):
+        if key != current_key:
+            grouped.append([])
+            current_key = key
+        grouped[-1].append(period)
+
+    expected_count = target_months // source_months
+    complete: list[list[PeriodFinancials]] = []
+    for chunk in grouped:
+        contiguous = all(
+            (current.period_end.year * 12 + current.period_end.month)
+            - (previous.period_end.year * 12 + previous.period_end.month)
+            == source_months
+            for previous, current in zip(chunk, chunk[1:], strict=False)
+        )
+        if len(chunk) != expected_count or not contiguous:
+            notes.append(
+                f"incomplete {target} bucket dropped ({len(chunk)} of "
+                f"{expected_count} period(s)); trailing partial or gap"
+            )
+            continue
+        complete.append(chunk)
+    return [aggregate_chunk(chunk, target) for chunk in complete], notes
 
 
 def trailing_window(periods: list[PeriodFinancials], months: int) -> list[PeriodFinancials]:

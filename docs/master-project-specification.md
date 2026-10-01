@@ -1,10 +1,17 @@
 # AI Business Risk — Master Project Specification (Phase 0)
 
 **Project:** AI Business Risk — Autonomous Multi-Agent Business Risk Intelligence & Stress Testing Platform
-**Status:** Phase 0 deliverable — **approved**. All contracts are frozen in the Phase 1 documents
+**Status:** Phase 0–4 deliverables — **Phases 0–3 approved/complete; Phase 4 engineering-complete with documentation closed (Stage 5 D18–D21 approved)**. All contracts are frozen in the Phase 1 documents
 (see `docs/`: architecture, agents, data, risk-engine, simulation, api, database, requirements,
-testing). No application code exists yet.
+testing). The implemented repository currently contains the Phase 2 foundation, the completed Phase 3 data-engineering pipeline, and the Phase 4 quantitative risk engine (`backend/risk_engine/` plus the Stage 5 `backend/data_engine/` market/macro adapter layer). **Phase 5 — ML Engine has not started.**
+
 **Companion document:** [phase-0-research.md](00_research/phase-0-research.md) (all external claims, citations, and licensing verdicts live there; accessed 2026-09-21).
+
+> **Recorded Phase 4 interpretation notes (no methodology change; recorded at documentation closure).**
+> **Q-M1 — volatility observation floor:** the implemented `equity_volatility` / `fx_volatility` floor is **30 observations** (`MIN_VOL_OBS = 30` in `backend/risk_engine/contracts.py`); the longer-history expectation elsewhere in this specification remains an open documentation/specification reconciliation item, and any change requires explicit approval before implementation.
+> **Q-M2 — VaR/ES market-series interpretation:** `var_95` and `es_95` both consume the **company/equity return leg**; FX returns feed only `fx_volatility`; benchmark returns feed only `beta`.
+> **Q-C1 — inflation passthrough sign:** `inflation_passthrough` uses a **signed** margin gap, `margin_gap = Δgross_margin − ΔCPI` (not an absolute difference).
+> Details: [04_quantitative-risk/phase-report.md](04_quantitative-risk/phase-report.md) (Phase 4 report, "Recorded specification ambiguities") and [01_architecture/risk-engine.md](01_architecture/risk-engine.md) §11–§13.
 
 ## Locked architecture decisions (approved before this specification)
 

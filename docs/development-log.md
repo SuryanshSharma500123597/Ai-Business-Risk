@@ -4,6 +4,86 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## Phase 4 — Quantitative Risk Engine (2026-10-01)
+
+**Status:** Engineering complete — documentation closed. Awaiting approval for Phase 5.
+**Scope:** `backend/risk_engine/` (deterministic, LLM-independent) plus the Stage 5 Phase 3→Phase 4 input adapter.
+
+Phase 4 was delivered in three chronological steps, recorded separately below.
+
+### 4A — Engine implementation + Category A audit remediation
+
+**Implemented:** `backend/risk_engine/` — pure-function metric calculators; `registry.py` (40 metrics, frozen anchors, `registry_version = "1.0.0"`); `scoring.py` (piecewise-linear interpolation with clamping, severity bands, dimension/composite aggregation with exact additive contributions); `sensitivity.py` (±20% weight perturbation with re-normalization and Spearman rank stability); immutable Pydantic `contracts.py`; `engine.py` coordinator. Seven risk dimensions; Altman Z/Z′/Z″ with variant auto-selection; Merton DD/PD reference-only.
+
+**Corrected during the audit ("Category A") — each correction is asserted by a named test:** D2/D3 Altman scoring maps linearly to 100 below the distress cut-off and each variant keeps its own cut-offs; D9 an entirely-missing profile no longer fabricates a 50.0 "Moderate" composite (the score is `None`); D10 `DimensionResult.weight` reports the configured weight used alongside the re-normalized `effective_weight`; D11 every metric/dimension/composite output carries `registry_version`; D12 interpolation clamps at the endpoints as well as between anchors.
+
+### 4B — Stage 5 D18–D21 integration (approved)
+
+- **D18 (beta):** removed the degenerate `calc_beta(series, series)` call that forced β = 1.0. `beta` now consumes two distinct typed legs (asset/equity and benchmark) and records both symbols in `inputs_used`; with a single leg it reports `UNAVAILABLE`/`MISSING_INPUT`.
+- **D19 (series separation):** added the typed `RiskEngineMarketInputs` contract (`equity_returns`, `benchmark_returns`, `fx_returns`, pre-aggregated macro scalars, provenance). Volatility/VaR/ES read the equity leg, `fx_volatility` reads the FX leg only, beta reads equity + benchmark. Log returns `ln(P_t/P_{t−1})`; beta legs inner-joined on shared dates (no forward fill).
+- **D20 (macro inputs):** added `backend/data_engine/{market_inputs,macro_inputs,risk_inputs}.py` so the caller assembles typed inputs outside the engine — the engine imports no fetcher, cache or SQL code (R3 preserved).
+- **D21 (weights):** `WeightsRef` added as a carried contract only; persistence and APIs deferred to Phase 10.
+- Floors: `MIN_BETA_ALIGNED_OBS = 120`, `MIN_VAR_ES_OBS = 60`, `MIN_VOL_OBS = 30`, `MIN_CPI_MONTHS = 24`, `MIN_FEDFUNDS_MONTHS = 60`. Mixed-currency beta legs raise `ValueError` (Q-B4).
+- Tests added: `stage5_helpers.py`, `test_stage5_beta.py` (7), `test_stage5_separation.py` (2), `test_stage5_routing.py` (12), `test_stage5_adapters.py` (6); notebook `notebooks/04_quantitative_risk/02_stage5_market_inputs_validation.ipynb`.
+- **Approval state: approved.** Stage 5 changed no formula, anchor, scoring or aggregation rule.
+
+### 4C — Final documentation closure (this entry)
+
+- Corrected `docs/04_quantitative-risk/phase-report.md`: removed the "property-based invariant tests via Hypothesis" claim (Hypothesis is neither installed nor declared — the property suite is deterministic seeded randomization), replaced the "100% formula fixture coverage" wording with 40 fixtures enforced by a registry-walking test (40/40), replaced "Limitations & Deviations: none" with the recorded corrections and ambiguities, and recorded that the golden baselines exist in the working tree but are untracked.
+- Recorded the three approved interpretation items: **Q-M1** — the 30-observation volatility floor is retained and the longer-history expectation stays an open specification reconciliation item requiring explicit approval before any change; **Q-M2** — VaR and ES use the company/equity return leg, FX returns are isolated to FX volatility, benchmark returns are used for beta only; **Q-C1** — `margin_gap = Δgross_margin − ΔCPI`, a signed gap. Supporting decisions Q-C2 (24-month CPI and 60-observation FEDFUNDS floors) and Q-B4 (mixed-currency beta legs rejected) are recorded as well.
+- Added implementation-status sections to `docs/01_architecture/risk-engine.md` (§11–§13) and `docs/01_architecture/testing.md` (§7); synchronized status in `README.md`, `docs/master-project-specification.md`, `docs/01_architecture/project-overview.md` and `omnirush.md`.
+- Evidence at closure: **223 tests passing** (196 pre-Stage-5 baseline + 27 Stage 5); `risk_engine` coverage **94%**; registry coverage **40/40**; contribution reconciliation **5/5** (`abs_tol = 1e-9`); golden profiles 1001–1005 unchanged; Ruff and Ruff-format clean on the code targets (`backend/`, `scripts/` — `ruff check .` additionally reports 19 notebook-cell findings from the intentional `sys.path` bootstrap, recorded as a known condition); Mypy clean (83 files); Phase 4 and Stage 5 notebooks pass fresh-kernel execution; determinism reconfirmed.
+- No implementation file, dependency, schema, API, agent, simulation or frontend change was made in this step, and nothing was committed.
+
+### Deferred (recorded, not implemented)
+
+- `AggregationWeights` persistence, weights API and `analyses.weights_id` writes → Phase 10.
+- Series-selector UI for choosing benchmark/FX series → Phase 11.
+- Everything from Phase 5 onward.
+
+### Approval gate
+
+**PHASE 4 DOCUMENTATION CLOSURE COMPLETE — WAITING FOR USER APPROVAL.**
+**Next phase after approval: PHASE 5 — ML ENGINE (not started).**
+
+---
+
+## Phase 3 — Data Engineering (2026-09-29)
+
+**Status:** Complete — approved (Phase 4 was executed after this gate).
+
+### Summary
+
+- Completed source-neutral Phase 3 contracts and typed data-quality findings.
+- Preserved the deterministic synthetic generator, canonical fixture seeds 1001–1005 and labelled anomaly injection.
+- Added strict all-period validation with error/warning/info severities and the frozen 70% coverage gate.
+- Completed calendar-aware period and currency normalization, including debt-schedule FX conversion and missing-flow preservation.
+- Added EDGAR (feature-flagged), FRED, World Bank, Stooq and optional Yahoo/yfinance adapters behind typed source-neutral contracts.
+- Completed checksum/TTL/atomic offline cache and source-fetch provenance integration.
+- Added canonical storage/readback for companies, periods, financials, market series and macro series without changing the Phase 2 schema.
+- Added raw feature-frame preparation, reproducible generation/seeding CLIs, fixture-only adapter tests and the Phase 3 profiling notebook.
+- Verified 105 tests passing, 90% total coverage, Ruff clean, formatting clean, Mypy clean and notebook execution from a fresh kernel.
+
+### Files and directories added
+
+`backend/data_engine/ingest/base.py` · `edgar.py` · `edgar_map.py` · `fred.py` · `stooq.py` · `world_bank.py` · `yahoo.py` ·
+`backend/data_engine/storage.py` · `backend/data_engine/features.py` · `scripts/generate_company.py` · `scripts/seed_db.py` ·
+`notebooks/03_data_engineering/synthetic_data_profiling.ipynb` · fixture files under `backend/tests/fixtures/` · Phase 3 test modules.
+
+### Known limitations
+
+- Live external endpoints were not used by normal tests; fixture parsing and explicit unavailable/degraded behavior are tested.
+- EDGAR mapping is conservative and does not claim complete US-GAAP coverage.
+- Stooq and Yahoo terms remain flagged; downloaded third-party payloads are not committed or redistributed.
+- Docker/live PostgreSQL remain unverified locally as carried from Phase 2.
+- Phase 3 feature preparation intentionally does not implement Phase 4 risk formulas or Phase 5 ML.
+
+### Approval gate
+
+**PHASE 3 COMPLETE — WAITING FOR USER APPROVAL FOR PHASE 4.**
+
+---
+
 ## Phase 2 — Foundation (2026-09-21)
 
 **Status:** Complete — awaiting approval. **First application code.**

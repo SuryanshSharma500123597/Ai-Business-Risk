@@ -1,0 +1,48 @@
+{
+  "cik": "0000320193",
+  "entityName": "Fixture Company",
+  "facts": {
+    "us-gaap": {
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {"units": {"USD": [
+        {"fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-01", "start": "2024-01-01", "end": "2024-12-31", "val": 1200000},
+        {"fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-01", "start": "2025-01-01", "end": "2025-12-31", "val": 1320000}
+      ]}},
+      "CostOfRevenue": {"units": {"USD": [
+        {"fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-01", "start": "2024-01-01", "end": "2024-12-31", "val": 720000},
+        {"fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-01", "start": "2025-01-01", "end": "2025-12-31", "val": 792000}
+      ]}},
+      "Assets": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 1800000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 1950000}
+      ]}},
+      "Liabilities": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 900000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 950000}
+      ]}},
+      "StockholdersEquity": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 900000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 1000000}
+      ]}},
+      "CashAndCashEquivalentsAtCarryingValue": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 200000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 250000}
+      ]}},
+      "AssetsCurrent": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 500000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 600000}
+      ]}},
+      "LiabilitiesCurrent": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "end": "2024-12-31", "val": 300000},
+        {"form": "10-K", "filed": "2026-02-01", "end": "2025-12-31", "val": 320000}
+      ]}},
+      "OperatingIncomeLoss": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "start": "2024-01-01", "end": "2024-12-31", "val": 180000},
+        {"form": "10-K", "filed": "2026-02-01", "start": "2025-01-01", "end": "2025-12-31", "val": 200000}
+      ]}},
+      "NetIncomeLoss": {"units": {"USD": [
+        {"form": "10-K", "filed": "2025-02-01", "start": "2024-01-01", "end": "2024-12-31", "val": 120000},
+        {"form": "10-K", "filed": "2026-02-01", "start": "2025-01-01", "end": "2025-12-31", "val": 140000}
+      ]}}
+    }
+  }
+}

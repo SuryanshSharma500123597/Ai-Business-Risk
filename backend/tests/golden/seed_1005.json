@@ -1,0 +1,66 @@
+{
+  "composite_score": 40.69888983686948,
+  "composite_severity": "Moderate",
+  "dimensions": {
+    "concentration": {
+      "contribution": 2.6190476190476186,
+      "effective_weight": 0.14285714285714285,
+      "score": 18.333333333333332,
+      "severity": "Low",
+      "weight": 0.14285714285714285
+    },
+    "credit": {
+      "contribution": 6.921397082976715,
+      "effective_weight": 0.14285714285714285,
+      "score": 48.44977958083701,
+      "severity": "Moderate",
+      "weight": 0.14285714285714285
+    },
+    "financial_strength": {
+      "contribution": 9.831053338876123,
+      "effective_weight": 0.14285714285714285,
+      "score": 68.81737337213286,
+      "severity": "High",
+      "weight": 0.14285714285714285
+    },
+    "liquidity": {
+      "contribution": 1.8784567004905486,
+      "effective_weight": 0.14285714285714285,
+      "score": 13.149196903433841,
+      "severity": "Low",
+      "weight": 0.14285714285714285
+    },
+    "macro": {
+      "contribution": 7.857142857142857,
+      "effective_weight": 0.14285714285714285,
+      "score": 55.0,
+      "severity": "High",
+      "weight": 0.14285714285714285
+    },
+    "market": {
+      "contribution": 4.925125571668959,
+      "effective_weight": 0.14285714285714285,
+      "score": 34.47587900168271,
+      "severity": "Moderate",
+      "weight": 0.14285714285714285
+    },
+    "operational": {
+      "contribution": 6.666666666666666,
+      "effective_weight": 0.14285714285714285,
+      "score": 46.666666666666664,
+      "severity": "Moderate",
+      "weight": 0.14285714285714285
+    }
+  },
+  "missing_dimensions": [],
+  "registry_version": "1.0.0",
+  "seed": 1005,
+  "sensitivity": {
+    "baseline_score": 40.69888983686948,
+    "max_score": 41.636172621378265,
+    "min_score": 39.76160705236071,
+    "rank_stability_score": 1.0,
+    "score_range": 1.8745655690175553
+  },
+  "total_contributions": 40.69888983686948
+}
