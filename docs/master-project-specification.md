@@ -1,9 +1,9 @@
 # AI Business Risk — Master Project Specification (Phase 0)
 
 **Project:** AI Business Risk — Autonomous Multi-Agent Business Risk Intelligence & Stress Testing Platform
-**Status:** Phase 0–4 deliverables — **Phases 0–3 approved/complete; Phase 4 engineering-complete with documentation closed (Stage 5 D18–D21 approved)**. All contracts are frozen in the Phase 1 documents
+**Status:** Phase 0–5 deliverables — **Phases 0–3 approved/complete; Phase 4 engineering-complete with documentation closed (Stage 5 D18–D21 approved); Phase 5 — ML Engine engineering-complete with documentation closed**. All contracts are frozen in the Phase 1 documents
 (see `docs/`: architecture, agents, data, risk-engine, simulation, api, database, requirements,
-testing). The implemented repository currently contains the Phase 2 foundation, the completed Phase 3 data-engineering pipeline, and the Phase 4 quantitative risk engine (`backend/risk_engine/` plus the Stage 5 `backend/data_engine/` market/macro adapter layer). **Phase 5 — ML Engine has not started.**
+testing). The implemented repository currently contains the Phase 2 foundation, the completed Phase 3 data-engineering pipeline, the Phase 4 quantitative risk engine (`backend/risk_engine/` plus the Stage 5 `backend/data_engine/` market/macro adapter layer), and the Phase 5 ML engine (`backend/ml_engine/`).
 
 **Companion document:** [phase-0-research.md](00_research/phase-0-research.md) (all external claims, citations, and licensing verdicts live there; accessed 2026-09-21).
 

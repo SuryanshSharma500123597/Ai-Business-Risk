@@ -4,6 +4,121 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## Phase 5 — ML Engine (2026-10-02)
+
+**Status:** Engineering complete — documentation closed. Awaiting approval for Phase 6.
+**Scope:** `backend/ml_engine/` (deterministic, LLM-independent) plus the Phase 5 validation notebook.
+**Upstream:** Phase 3 canonical periods and the Phase 4 metric calculators, consumed read-only.
+
+### 5A — Engine implementation
+
+**Implemented:** `backend/ml_engine/` — `contracts.py` (typed `Provenance`, `AnomalyResult`,
+`DriverContribution`, `AnomalyExplanation`, `ModelMetadata`, `MLFinding`, frozen disclaimers,
+`FEATURE_SCHEMA_VERSION = "1.0.0"`); `features.py` (27-column scale-free ratio matrix built from
+**Phase 4 calculators**, trailing deltas and rolling volatility, `FORBIDDEN_COLUMNS` leakage guard,
+SHA-256 frame fingerprint); `models.py` (Isolation Forest `n_estimators=200`, `random_state=42`,
+`n_jobs=1`, median/IQR scaling, rank-CDF scores in `[0, 1]`, quantile thresholding);
+`baseline.py` (trailing-only rolling z-score / Tukey-IQR rule, window 12, min 8 obs, `|z| >= 3.0`);
+`explain.py` (SHAP attribution with a `1e-6` additivity contract plus a deterministic permutation
+fallback); `evaluate.py` (ROC-AUC, PR-AUC, precision/recall/F1/FPR/FNR, precision@k, recall@k,
+verdict); `train.py` (versioned `model.joblib` + `metadata.json`, checksum, schema validation).
+
+**Key decisions:**
+- **Anomaly ≠ risk.** No mapping from an anomaly score to the Phase 4 0–100 composite exists, and the
+  disclaimers are contract defaults stamped onto every output rather than prose.
+- **Falsifiability (D4).** The Isolation Forest is retained only if it beats the rule baseline on both
+  PR-AUC and F1. On the pinned fixture it does not.
+- **Phase 4 reuse, not reimplementation.** The ML feature matrix calls the frozen Phase 4 calculators,
+  so the two engines cannot silently diverge.
+- **R3 preserved.** `ml_engine` imports no `app`/`agents`/`llm`/`services` module; this is enforced by
+  the existing AST scan in `test_architecture_imports.py`, which already listed `ml_engine` before the
+  package existed.
+
+### 5B — Determinism defect found and fixed
+
+`shap.Explainer` resolves to `PermutationExplainer`, which samples permutations from the **global
+NumPy RNG**. Attribution was therefore not reproducible: two back-to-back attributions of the same
+row differed by up to `3.91e-4`, and the driver ranking reordered. This surfaced as a golden
+regression — `top_drivers[2]` flipped between an isolated run and the full suite.
+
+**Fix:** explicit `seed=EXPLAINER_SEED` (42) passed to `shap.Explainer`, plus
+`np.random.get_state()` / `set_state()` save-restore around masker construction and the explainer
+call, so the engine leaks no RNG state to its caller. Attribution is now identical after a
+9,999-number RNG burn, and additivity holds (measured notebook error `2.776e-17`).
+
+### 5C — Final documentation closure (this entry)
+
+- **SHAP decision, recorded honestly.** The production code does **not** call `shap.TreeExplainer`;
+  it calls `shap.Explainer`, which SHAP 0.52.0 resolves to `PermutationExplainer`. TreeSHAP cannot
+  satisfy the engine's additivity contract against `decision_function` — measured mismatch
+  `4.498977` (base + Σvalues `4.473635` vs `decision_function(x)` `-0.025343`) — because it explains
+  the ensemble's raw path-length output. The master specification anticipated exactly this
+  ("Phase 5 spike first; fallback: explain on surrogate / permutation importance (documented)"), so
+  the permutation route is the **approved fallback**. The repository contains **no** committed record
+  of a TreeExplainer attempt, and the report does not claim one.
+- **Open interpretation item recorded (not fixed):** the internal `ExplainerKind` literal
+  `"shap_exact"` is a misnomer for an approximate estimator (seed-to-seed drift ~2.2e-4). Renaming it
+  would invalidate the committed golden, so it is documented as deferred item D-1.
+- **Honest evaluation result:** model PR-AUC **0.5250** vs rule baseline PR-AUC **0.8304**, verdict
+  **`baseline_wins_or_tie`**. The baseline wins on the pinned fixture; the model is not retained.
+- **Evaluation boundary recorded:** there is no train/test split, so all metrics are **in-sample**
+  descriptive statistics of a single 24-period synthetic company, not generalization performance.
+- **Score semantics recorded:** `anomaly_scores()` is a rank-CDF over training rows **pooled with the
+  rows being scored**, so it is batch-dependent (the same period scores differently in a different
+  batch). Documented and deliberately unchanged; freezing a reference distribution is deferred (D-2).
+- **Artifact integrity stated accurately:** `checksum_file()` generates a SHA-256 digest for
+  provenance, but it is **not** stored in metadata and **not** verified on load. Tamper detection
+  rests on schema validation (model vs. metadata feature lists, and both vs. `FEATURE_NAMES`),
+  which is unit-tested for both tamper modes. Enforcing the checksum is deferred (D-4).
+- **Notebook:** created `notebooks/05_ml_engine/01_ml_anomaly_validation.ipynb` (24 cells, 13 code) —
+  validation/documentation only, no production logic, local synthetic data, no network, no API keys.
+  Executed top-to-bottom from a fresh kernel with `nbclient`: **24 cells executed, 0 error outputs**.
+  The run surfaced one genuine defect (`company.profile.company_id` does not exist on
+  `CompanyProfile`), fixed to `company.edgar_cik` before the final execution.
+- **Regression test added (test-only):**
+  `test_attribution_is_stable_after_global_rng_consumption` in `backend/tests/unit/test_ml_explain.py`
+  — asserts identical attribution and base value after burning 9,999 global NumPy random numbers,
+  additivity within `ADDITIVITY_TOL`, and restoration of the caller's RNG state. This check was
+  previously an interactive verification only; it is now a committed test and passes.
+- **Dependency declaration:** added `joblib>=1.3` to `pyproject.toml` (`train.py` imports it
+  directly; it had only been a transitive scikit-learn dependency). The lockfile version
+  `joblib==1.6.0` is unchanged.
+- **Evidence at closure:** **270 tests passing** (223 at Phase 4 closure → 269 at Phase 5 engineering
+  completion → 270 with the determinism regression test); `ml_engine` coverage **99%** (503 statements);
+  `risk_engine` coverage **94%**, unchanged; registry coverage **40/40**; contribution reconciliation
+  **5/5**; Phase 4 golden profiles 1001–1005 byte-for-byte unchanged; ML golden
+  (`ml_anomaly_golden.json`, seed 7101) passing and **not** regenerated during this closure; Ruff and
+  Ruff-format clean on the code targets (`backend/`, `scripts/`, 101 files); Mypy clean (97 files).
+- **Synchronized status** in `README.md`, `docs/01_architecture/project-overview.md`,
+  `docs/master-project-specification.md` and `docs/01_architecture/testing.md`.
+- **Repository cleanup at Phase 5 publication:** the obsolete `omnirush.md` status snapshot was
+  **removed**. It was an OmniRush-era agent instruction/context file with no code, test, CI,
+  packaging, Docker or Alembic dependency; every status fact it carried is preserved in `README.md`,
+  this development log and the per-phase reports. Cline is the development agent. Two historical
+  mentions of the file are deliberately retained in `docs/03_data-engineering/phase-report.md` and in
+  the Phase 4 entry above, because they accurately describe what existed at the time. `graphify-out/`
+  and `raw/` were added to `.gitignore` so that external Graphify tooling output can never be
+  committed.
+- No Phase 4 file, formula, anchor, scoring rule, sensitivity rule or golden fixture was modified. No
+  Phase 6 implementation occurred. The Phase 5 work and the repository cleanup were published as a
+  single commit on `main`; no previous commit was amended or rewritten.
+
+### Deferred (recorded, not implemented)
+
+`D-1` rename the `"shap_exact"` explainer label (changes the golden) · `D-2` freeze a reference
+distribution so scores stop being batch-dependent · `D-3` explicit out-of-sample evaluation split ·
+`D-4` persist and verify the artifact checksum on load · `D-5` production orchestrator emitting
+`AnomalyResult` / `MLFinding` (Phase 9/10) · `D-6` artifact persistence and model registry (Phase 10)
+· `D-7` LIME cross-check · `D-8` real-company evaluation (unlabeled EDGAR data cannot serve as ground
+truth) · `D-9` Phase 13 external benchmark · `D-10` duplicate-period handling test.
+
+### Approval gate
+
+**PHASE 5 DOCUMENTATION CLOSURE COMPLETE — AWAITING USER REVIEW.**
+**Next phase after approval: PHASE 6 — BUSINESS DIGITAL TWIN (not started).**
+
+---
+
 ## Phase 4 — Quantitative Risk Engine (2026-10-01)
 
 **Status:** Engineering complete — documentation closed. Awaiting approval for Phase 5.

@@ -8,7 +8,7 @@
 
 [![Phase 4 complete](https://img.shields.io/badge/phase%204-complete-blue)](#project-status)
 [![Stage 5 approved](https://img.shields.io/badge/stage%205-approved-blue)](#project-status)
-[![Phase 5 not started](https://img.shields.io/badge/phase%205-not%20started-lightgrey)](#project-status)
+[![Phase 5 complete](https://img.shields.io/badge/phase%205-complete-blue)](#project-status)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
@@ -16,7 +16,7 @@
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00)
 ![PostgreSQL / SQLite](https://img.shields.io/badge/PostgreSQL%2016%20%2F%20SQLite-tests-4169E1?logo=postgresql&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-foundation%20only-009688?logo=fastapi&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-223%20tests-0A9EDC?logo=pytest&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-270%20tests-0A9EDC?logo=pytest&logoColor=white)
 ![Ruff](https://img.shields.io/badge/Ruff-clean-261230?logo=ruff&logoColor=white)
 ![Mypy](https://img.shields.io/badge/Mypy-clean-2A6DB2)
 ![Jupyter](https://img.shields.io/badge/Jupyter-notebooks-F37626?logo=jupyter&logoColor=white)
@@ -25,7 +25,7 @@
 
 </div>
 
-> **About the badges:** they are static and describe the locally verified Phase 4 state of this
+> **About the badges:** they are static and describe the locally verified Phase 5 state of this
 > repository. **No CI service is configured yet** (Phase 12), so there is deliberately no build or
 > coverage-service badge. `FastAPI` is marked *foundation only* because Phase 2 shipped the app factory
 > and `/api/v1/health`; the rest of the API is Phase 10.
@@ -49,7 +49,7 @@
 | Phase 3 — Data Engineering | ✅ Complete |
 | Phase 4 — Quantitative Risk Engine | ✅ Complete |
 | Stage 5 — Market/Macro Integration | ✅ Approved |
-| Phase 5 — ML Engine | ⏳ Not Started |
+| Phase 5 — ML Engine | ✅ Complete |
 | Phase 6 — Business Digital Twin | ⏳ Planned |
 | Phase 7 — Scenario Engine | ⏳ Planned |
 | Phase 8 — Stress Testing | ⏳ Planned |
@@ -62,13 +62,14 @@
 
 **Where the project stands today.** The repository contains the frozen research/architecture documents
 (Phases 0–1), the backend foundation (Phase 2), the complete data-engineering pipeline with a
-deterministic synthetic generator (Phase 3), and the complete quantitative risk engine with its approved
-Stage 5 market/macro integration (Phase 4). **Phase 5 has not started.** This is not yet an
-end-to-end platform: there is no ML engine, digital twin, scenario engine, stress-testing engine, agent
-graph, application API or frontend in the repository.
+deterministic synthetic generator (Phase 3), the complete quantitative risk engine with its approved
+Stage 5 market/macro integration (Phase 4), and the ML anomaly engine with SHAP driver attribution
+(Phase 5). This is not yet an end-to-end platform: there is no digital twin, scenario engine,
+stress-testing engine, agent graph, application API or frontend in the repository, and the ML engine
+has no production entry point — it is invoked programmatically from tests and the validation notebook.
 
 Phases are executed strictly one at a time, and every phase ends with a report plus an explicit approval
-gate. The Phase 4 closure report is [docs/04_quantitative-risk/phase-report.md](docs/04_quantitative-risk/phase-report.md).
+gate. The Phase 5 closure report is [docs/05_ml_engine/phase-report.md](docs/05_ml_engine/phase-report.md).
 
 ---
 
@@ -82,7 +83,7 @@ layer planned). Dashed/grey = planned in a future phase.
 ```mermaid
 flowchart TD
     A["Business data<br/>synthetic generator, seeds 1001-1005 · optional EDGAR import"] --> B["Validation<br/>70% coverage gate · accounting identities · period/currency normalization"]
-    B --> C["Risk detection<br/>anomaly engine (Phase 5, planned)"]
+    B --> C["Risk detection<br/>ML anomaly engine (Phase 5, implemented)"]
     C --> D["Quantification<br/>7 risk dimensions to a 0-100 composite"]
     D --> E["Explanation<br/>exact additive contributions (L1)"]
     E --> F["Scenario generation<br/>bounded schema (Phase 7, planned)"]
@@ -117,7 +118,7 @@ flowchart TB
     end
     subgraph EN["Deterministic engines"]
         RE["Quantitative risk engine — IMPLEMENTED (Phase 4)"]
-        ML["ML anomaly engine (Phase 5, planned)"]
+        ML["ML anomaly engine — IMPLEMENTED (Phase 5)"]
         TW["Business digital twin (Phase 6, planned)"]
         SC["Scenario + stress engine (Phase 7/8, planned)"]
     end
@@ -211,18 +212,29 @@ Pure-function, deterministic engine — no FastAPI, LangGraph, LLM or database i
 
 | Gate | Result (re-verified for this publication) |
 |---|---|
-| Test suite | **223 passed** |
+| Test suite | **270 passed** |
 | `risk_engine` line coverage | **94%** (target ≥ 80%) |
+| `ml_engine` line coverage | **99%** (503 statements) |
 | Registry coverage | **40 / 40** formulas have a hand-computed fixture |
 | Golden profiles (seeds 1001–1005) | **5 / 5** byte-identical baselines |
+| ML golden (seed 7101) | **1 / 1** pinned fixture, `abs_tol = 1e-9` |
 | Contribution reconciliation | **5 / 5** checks at `abs_tol = 1e-9` |
 | Ruff (`backend`, `scripts`) | **clean** |
-| Ruff format (`backend`, `scripts`) | **clean** (87 files) |
-| Mypy (`backend`) | **clean** (83 source files) |
-| Notebooks (Phase 3, Phase 4, Stage 5) | **3 / 3 execute top-to-bottom on a fresh kernel** |
+| Ruff format (`backend`, `scripts`) | **clean** (101 files) |
+| Mypy (`backend`) | **clean** (97 source files) |
+| Notebooks (Phase 3, Phase 4, Stage 5, Phase 5) | **4 / 4 execute top-to-bottom on a fresh kernel** |
 
-*Honest footnote:* Ruff also lints notebook *cell* code by default. `ruff check .` reports 19 findings
-inside the three notebooks (E402/I001/E501 caused by the `sys.path` bootstrap in their setup cells). That
+*Honest footnote on the ML engine:* on the pinned fixture the **rolling rule baseline beats the
+Isolation Forest** (PR-AUC 0.8304 vs 0.5250), so the retention verdict is `baseline_wins_or_tie` and the
+model is **not** retained — this is the intended falsifiability behaviour of decision D4, not a defect.
+Those metrics are also **in-sample** on a single 24-period synthetic company, not generalization
+estimates. Attribution uses `shap.Explainer`, which SHAP 0.52.0 resolves to `PermutationExplainer`
+(TreeSHAP cannot satisfy the engine's additivity contract against `decision_function`); it is seeded
+and its RNG state is restored so explanations are reproducible. See
+[docs/05_ml_engine/phase-report.md](docs/05_ml_engine/phase-report.md).
+
+*Honest footnote:* Ruff also lints notebook *cell* code by default. `ruff check .` reports findings
+inside the notebooks (E402/I001/E501 caused by the `sys.path` bootstrap in their setup cells). That
 is a recorded, accepted condition for these research notebooks — no `backend/` or `scripts/` file has a
 Ruff finding. Likewise, Hypothesis is **not** used: the property tests use deterministic seeded
 randomization (`random.Random(42)`).
@@ -351,7 +363,6 @@ AI-Business-Risk/
 │   ├── 03_data_engineering/  # synthetic data profiling
 │   └── 04_quantitative_risk/ # formula validation · Stage 5 market-inputs validation
 ├── scripts/                  # generate_company.py · seed_db.py
-├── omnirush.md               # repository status snapshot
 ├── README.md
 ├── pyproject.toml
 ├── requirements-lock.txt
@@ -375,10 +386,10 @@ AI-Business-Risk/
 - [x] Phase 3 — Data Engineering
 - [x] Phase 4 — Quantitative Risk Engine
 - [x] Stage 5 — Market/Macro Integration (D18–D21, approved)
+- [x] Phase 5 — ML Engine (Isolation Forest anomaly detection + SHAP attribution, benchmarked against a rule baseline)
 
 ### Planned
 
-- [ ] Phase 5 — ML Engine (Isolation Forest anomaly detection + SHAP attribution, benchmarked against a rule baseline)
 - [ ] Phase 6 — Business Digital Twin
 - [ ] Phase 7 — Scenario Engine
 - [ ] Phase 8 — Stress Testing
@@ -391,9 +402,10 @@ AI-Business-Risk/
 
 **Roadmap stack (none of this is implemented yet — listed only to be explicit about intent):** LangGraph
 (Phase 9); React + Vite + TypeScript with ECharts/Recharts, GSAP/ScrollTrigger, Motion and TanStack Query
-(Phase 11); Isolation Forest + SHAP (Phase 5); the full REST/SSE API surface (Phase 10); JWT auth, roles,
+(Phase 11); the digital twin (Phase 6); the full REST/SSE API surface (Phase 10); JWT auth, roles,
 rate limiting and hardening (Phase 12). The only FastAPI surface today is `/api/v1/health`, and the only
-persistence today is the Phase 2 core schema managed with Alembic.
+persistence today is the Phase 2 core schema managed with Alembic. Isolation Forest + SHAP **are**
+implemented (Phase 5) but are not yet exposed through any service, API or agent.
 
 ## Quick Start
 
@@ -475,7 +487,7 @@ touches an external endpoint.
 | [docs/02_foundation/phase-report.md](docs/02_foundation/phase-report.md) | Phase 2 completion report |
 | [docs/03_data-engineering/phase-report.md](docs/03_data-engineering/phase-report.md) | Phase 3 completion report |
 | [docs/04_quantitative-risk/phase-report.md](docs/04_quantitative-risk/phase-report.md) | Phase 4 + Stage 5 completion report |
-| [omnirush.md](omnirush.md) | Repository status snapshot (completed / verified / outstanding) |
+| [docs/05_ml_engine/phase-report.md](docs/05_ml_engine/phase-report.md) | Phase 5 completion report (ML anomaly engine) |
 
 ## Limitations
 
@@ -483,8 +495,23 @@ touches an external endpoint.
   commercial product.
 - It is **not professional financial advice**, **not a regulatory-certified risk system**, **not a live
   trading or treasury system**, and **not a replacement for professional risk teams**.
-- Only Phases 0–4 exist. There is no ML engine, digital twin, scenario engine, stress-testing engine, agent
-  graph, application API or frontend yet, so no end-to-end user workflow is available.
+- Only Phases 0–5 exist. There is no digital twin, scenario engine, stress-testing engine, agent
+  graph, application API or frontend yet, so no end-to-end user workflow is available. The Phase 5 ML
+  engine is complete but is **not** wired into any service, API or agent, and has **no production entry
+  point** — it is invoked programmatically from tests and its validation notebook.
+- **The ML engine does not currently beat its own baseline.** On the pinned synthetic fixture the
+  rolling z-score/IQR rule baseline achieves a higher PR-AUC (0.8304) than the Isolation Forest
+  (0.5250), so the retention verdict is `baseline_wins_or_tie` and the model is not retained. This is
+  the intended falsifiability behaviour, not a hidden failure — and it is **not** evidence of
+  real-world anomaly-detection accuracy.
+- **ML metrics are in-sample.** There is no train/test split: the model is fitted and scored on the
+  same 24 periods of one synthetic company, so the reported figures are descriptive statistics of that
+  fixture, not generalization estimates. Anomaly scores are also **batch-dependent** (a rank-CDF over
+  training rows pooled with the scored rows).
+- **Anomaly ≠ risk and attribution ≠ causation.** The ML engine produces no mapping onto the Phase 4
+  0–100 risk score, and its SHAP drivers explain the model rather than the business cause.
+- The ML engine has been validated **only** against synthetic injected anomalies. No real audited
+  financial statements, no external benchmark, no predictive-validity claim.
 - The engine is deterministic and unit-verified, but it has **not** been validated against real audited
   financial statements or an external risk benchmark; market and macro metrics depend on caller-supplied
   cached series and degrade explicitly when those are absent.

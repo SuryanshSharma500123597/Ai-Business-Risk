@@ -3,10 +3,11 @@
 **Status:** Frozen at Phase 1. Executed from Phase 2 onward. Framework: pytest (+ pytest-cov,
 hypothesis where valuable — a Phase-1 plan only, see the note below). Frontend: Vitest + Playwright (Phase 11/12).
 
-> **Implementation note (recorded at Phase 4 closure):** Hypothesis was **not** adopted. It is not
-> installed and not declared in `pyproject.toml`, and no test imports it. `backend/tests/property/`
-> implements the property suite with plain deterministic seeded randomization (`random.Random(42)`).
-> §7 records what is actually implemented and measured.
+> **Implementation note (recorded at Phase 4 closure; extended at Phase 5 closure):** Hypothesis was **not**
+> adopted. It is not installed and not declared in `pyproject.toml`, and no test imports it.
+> `backend/tests/property/` implements the property suite with plain deterministic seeded randomization
+> (`random.Random(42)`) — for Phase 4 (`test_risk_properties.py`) and for Phase 5
+> (`test_ml_properties.py`). §7 records what is actually implemented and measured.
 
 ## 1. Test pyramid (frozen)
 
@@ -77,7 +78,13 @@ This section records what the repository actually contains and what was actually
 | Engine behaviour | Interpolation, severity labels, full engine execution, sensitivity not corrupting contributions, all-missing behavior, configured-vs-effective weights, custom-weight reconciliation | `backend/tests/unit/test_risk_engine.py` (21 tests) |
 | Stage 5 routing | Distinct beta legs, hand-computed covariance/variance, perfect correlation, zero benchmark variance, 120-observation boundary, inner join + joined count, missing legs, mixed-currency rejection, legacy `market_series` cannot force β = 1.0, input mutual exclusion, VaR/ES equity leg, macro routing, macro short history, provenance stamping, `WeightsRef` contract-only, FX/equity separation, adapter log-return and helper math | `backend/tests/unit/test_stage5_*.py` (27 tests) |
 | Canonical-seed engine smoke | Structural and determinism assertions for seeds 1001–1005 | `backend/tests/unit/test_golden_risk.py` (5 tests) |
-| Notebook execution | Fresh-kernel top-to-bottom execution of the Phase 3, Phase 4 and Stage 5 notebooks | `notebooks/03_data_engineering/`, `notebooks/04_quantitative_risk/` |
+| Notebook execution | Fresh-kernel top-to-bottom execution of the Phase 3, Phase 4, Stage 5 and Phase 5 notebooks | `notebooks/03_data_engineering/`, `notebooks/04_quantitative_risk/`, `notebooks/05_ml_engine/` |
+| ML features & leakage | 24×27 shape, forbidden-column guard, determinism, trailing-only deltas, rollvol minimum history, `_period_dict` / `_finite_or_none` guards, malformed periods | `backend/tests/unit/test_ml_features.py` |
+| ML model & baseline | Score bounds and rank consistency, threshold flag share, repeat-fit determinism, empty-frame rejection, trailing-only rule baseline, injected-window detection, non-numeric cells, robust-params fallback, threshold range validation | `backend/tests/unit/test_ml_models.py` |
+| ML explain & evaluate | Attribution finiteness, top-k drivers, global summary, all evaluation metrics and the retention verdict, input-alignment and insufficient-label rejection, single-class helpers, permutation fallback, SHAP failure paths (NaN / non-additive / raising), missing-shap path, non-finite feature parsing, **RNG-burn determinism + additivity + RNG-state restoration** | `backend/tests/unit/test_ml_explain.py` |
+| ML artifacts | Train→load round trip, metadata JSON, SHA-256 checksum, invalid-rate rejection, metadata tamper rejection, schema-version tamper rejection | `backend/tests/unit/test_ml_train.py` |
+| ML properties | Deterministic **seeded** invariants (`random.Random(42)`): injection-magnitude monotonicity, threshold/flag score consistency, rule-baseline monotonicity | `backend/tests/property/test_ml_properties.py` |
+| ML golden baseline | JSON for the pinned seed-7101 `MARGIN_COLLAPSE` fixture (scores, flags, verdict, PR-AUCs, threshold, top drivers), compared at `abs_tol = 1e-9`, regenerated only through `pytest --regen-golden` | `backend/tests/golden/test_ml_goldens.py` + `ml_anomaly_golden.json` |
 
 Measured at Phase 4 closure:
 
@@ -91,6 +98,27 @@ ruff check backend scripts   -> All checks passed!
 ruff format --check backend  -> 87 files already formatted
 mypy backend                 -> Success: no issues found (83 files)
 ```
+
+Measured at Phase 5 closure:
+
+```text
+pytest -q                          -> 270 passed
+ml_engine line coverage            -> 99%    (503 statements)
+risk_engine line coverage          -> 94%    (unchanged)
+registry coverage                  -> 40/40  (unchanged)
+contribution reconciliation        -> 5/5    (unchanged)
+Phase 4 golden baselines           -> 5/5    (seeds 1001-1005, unchanged)
+ML golden baseline                 -> 1/1    (seed 7101)
+ruff check backend scripts         -> All checks passed!
+ruff format --check backend        -> 101 files already formatted
+mypy backend                       -> Success: no issues found (97 files)
+```
+
+> **Honest Phase 5 note (recorded, not corrected):** on the pinned ML fixture the rolling rule baseline
+> **beats** the Isolation Forest (PR-AUC 0.8304 vs 0.5250), so the retention verdict is
+> `baseline_wins_or_tie` and the model is not retained. That is the intended falsifiability behaviour of
+> decision D4, not a defect. The metrics are also **in-sample** on a single 24-period synthetic
+> company and are not generalization estimates. See `docs/05_ml_engine/phase-report.md`.
 
 Ruff is run over the Python code targets (`backend/`, `scripts/`). Ruff also lints **notebook cell code**
 by default, and `ruff check .` reports 19 notebook-cell findings (E402/I001/E501 caused by the

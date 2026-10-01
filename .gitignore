@@ -34,6 +34,9 @@ __agent__/
 .agent/
 Skills/
 skills/
+# external development tooling output (Graphify) — never commit generated graphs
+graphify-out/
+raw/
 
 # IDEs / editors
 .vscode/
