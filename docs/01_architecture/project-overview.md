@@ -7,7 +7,7 @@ for a single business and propagates user-defined or AI-translated scenarios thr
 business digital twin. LLM agents orchestrate and narrate; **every number comes from deterministic,
 tested engines** (quantitative risk engine, ML anomaly detector, business digital twin).
 
-**Status:** Phase 5 — ML Engine is **engineering-complete and documentation-closed** (see [05_ml_engine/phase-report.md](../05_ml_engine/phase-report.md)). Phase 4 — Quantitative Risk Engine is **engineering-complete and documentation-closed** (Stage 5 D18–D21 approved; see [04_quantitative-risk/phase-report.md](../04_quantitative-risk/phase-report.md)). Phases 0–3 are complete/approved. The architecture remains frozen; the frozen Phase 1 contracts below are unchanged.
+**Status:** Phase 6 — Business Digital Twin is **engineering-complete and documentation-closed** (see [06_digital_twin/phase-report.md](../06_digital_twin/phase-report.md)). Phase 5 — ML Engine is **engineering-complete and documentation-closed** (see [05_ml_engine/phase-report.md](../05_ml_engine/phase-report.md)). Phase 4 — Quantitative Risk Engine is **engineering-complete and documentation-closed** (Stage 5 D18–D21 approved; see [04_quantitative-risk/phase-report.md](../04_quantitative-risk/phase-report.md)). Phases 0–3 are complete/approved. The architecture remains frozen; the frozen Phase 1 contracts below are unchanged. Phase 6 implements the frozen [simulation.md](simulation.md) §1–§2 recursion in `backend/simulation/` and **did not modify any frozen contract**; Phase 7 has not started.
 
 ## What it does
 

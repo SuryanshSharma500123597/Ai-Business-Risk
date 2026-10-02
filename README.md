@@ -8,7 +8,7 @@
 
 [![Phase 4 complete](https://img.shields.io/badge/phase%204-complete-blue)](#project-status)
 [![Stage 5 approved](https://img.shields.io/badge/stage%205-approved-blue)](#project-status)
-[![Phase 5 complete](https://img.shields.io/badge/phase%205-complete-blue)](#project-status)
+[![Phase 6 complete](https://img.shields.io/badge/phase%206-complete-blue)](#project-status)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
@@ -16,7 +16,7 @@
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00)
 ![PostgreSQL / SQLite](https://img.shields.io/badge/PostgreSQL%2016%20%2F%20SQLite-tests-4169E1?logo=postgresql&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-foundation%20only-009688?logo=fastapi&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-270%20tests-0A9EDC?logo=pytest&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-388%20tests-0A9EDC?logo=pytest&logoColor=white)
 ![Ruff](https://img.shields.io/badge/Ruff-clean-261230?logo=ruff&logoColor=white)
 ![Mypy](https://img.shields.io/badge/Mypy-clean-2A6DB2)
 ![Jupyter](https://img.shields.io/badge/Jupyter-notebooks-F37626?logo=jupyter&logoColor=white)
@@ -25,7 +25,7 @@
 
 </div>
 
-> **About the badges:** they are static and describe the locally verified Phase 5 state of this
+> **About the badges:** they are static and describe the locally verified Phase 6 state of this
 > repository. **No CI service is configured yet** (Phase 12), so there is deliberately no build or
 > coverage-service badge. `FastAPI` is marked *foundation only* because Phase 2 shipped the app factory
 > and `/api/v1/health`; the rest of the API is Phase 10.
@@ -50,7 +50,7 @@
 | Phase 4 — Quantitative Risk Engine | ✅ Complete |
 | Stage 5 — Market/Macro Integration | ✅ Approved |
 | Phase 5 — ML Engine | ✅ Complete |
-| Phase 6 — Business Digital Twin | ⏳ Planned |
+| Phase 6 — Business Digital Twin | ✅ Complete |
 | Phase 7 — Scenario Engine | ⏳ Planned |
 | Phase 8 — Stress Testing | ⏳ Planned |
 | Phase 9 — Multi-Agent LangGraph | ⏳ Planned |
@@ -119,7 +119,7 @@ flowchart TB
     subgraph EN["Deterministic engines"]
         RE["Quantitative risk engine — IMPLEMENTED (Phase 4)"]
         ML["ML anomaly engine — IMPLEMENTED (Phase 5)"]
-        TW["Business digital twin (Phase 6, planned)"]
+        TW["Business digital twin — IMPLEMENTED (Phase 6)"]
         SC["Scenario + stress engine (Phase 7/8, planned)"]
     end
     subgraph DA["Data, persistence, observability, audit"]
@@ -390,7 +390,7 @@ AI-Business-Risk/
 
 ### Planned
 
-- [ ] Phase 6 — Business Digital Twin
+- [x] Phase 6 — Business Digital Twin
 - [ ] Phase 7 — Scenario Engine
 - [ ] Phase 8 — Stress Testing
 - [ ] Phase 9 — Multi-Agent LangGraph (supervisor + specialist agents, transcript tests, numeric verification)

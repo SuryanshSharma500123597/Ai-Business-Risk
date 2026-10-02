@@ -4,6 +4,77 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## Phase 6 — Business Digital Twin (2026-10-02)
+
+**Status:** Engineering complete — documentation closed. Awaiting approval for Phase 7.
+**Scope:** `backend/simulation/` (deterministic, LLM-independent monthly financial recursion)
+plus the Phase 6 validation notebook and twin trajectory goldens.
+**Upstream:** Phase 3 canonical periods and Phase 4 metric calculators, consumed read-only.
+**Authority:** `docs/01_architecture/simulation.md` §1–§2 (frozen at Phase 1), implemented
+verbatim. The frozen document was **not** modified.
+
+- **Created** `backend/simulation/__init__.py` (exports and frozen scope disclaimers),
+  `contracts.py` (typed contracts, `TWIN_VERSION = "1.0.0"`, `SimulationStatus`,
+  `MonthLedger`), `assumptions.py` (frozen §1 parameter derivation) and `twin.py` (frozen §2
+  monthly recursion, invariant checks, `run_twin`, `simulate`).
+- **The frozen §2 equations are implemented verbatim, not the simplified set carried in the
+  Phase 6 planning prompt** (decision D-0). The frozen version adds a supply ceiling
+  `Capacity0`, FX demand elasticity, commodity and FX cost legs damped by `(1−ptc)`, a split
+  floating/fixed interest basis, revolver draws against a minimum-cash buffer, and an
+  explicit `funding_gap` breach. Implementing the subset would have deleted the FX/commodity
+  channels the project advertises as a research contribution.
+- **Phase 4 was reused, not modified.** `calc_interest_coverage` and
+  `calc_cash_runway_months` fit the twin's per-month outputs exactly. `calc_dscr` needs a
+  short-term balance that §2 never projects, so the month's actual scheduled principal is
+  supplied as `st_debt`, yielding the standard monthly debt-service-coverage ratio. This is
+  the only semantic substitution in the phase and it is documented at the call site.
+- **Explicit missing-input behaviour.** Nothing is zero-filled, interpolated or
+  forward-filled. A missing required series raises with the offending period named. Short
+  histories raise `InsufficientHistoryError` rather than silently shortening the frozen
+  12-month derivation window.
+- **Honest finding recorded, not smoothed over (deferred D-6-3):** frozen §6.3's claim that
+  single-factor sweeps move *trough cash* monotonically does **not** hold for contraction
+  shocks. Under a −30% revenue shock on seed 1002, net income turns negative while operating
+  cash flow stays positive, because `OCF = NI + DA − ΔNWC` and a shrinking business releases
+  working capital (ΔNWC ≈ −4.5M in month 1). Trough cash *rises* (14.1M → 19.5M) while DSCR
+  falls (0.597 → 0.022) and EBITDA falls. This is economically coherent, is pinned by a
+  dedicated test, and is a genuine contradiction of a frozen invariant. **It is not resolved
+  here** — amending a frozen invariant requires user approval via change control.
+- **Honest limitation recorded (D-1):** the twin requires ≥ 12 monthly periods.
+  `edgar.py` yields ANNUAL/QUARTERLY only and `normalize/periods.py` aggregates upward only,
+  so no annual→monthly decomposer exists in the repository. Real annual-filing companies
+  cannot be simulated yet; the fix belongs in Phase 3, not Phase 6.
+- **Zero new dependencies.** `pyproject.toml` and `requirements-lock.txt` are byte-identical.
+- **Evidence at closure:** **388 tests passing** (270 at Phase 5 closure → +118); `simulation`
+  coverage **97–100%** (above the ≥80% NFR3 floor); `risk_engine` **94%** and `ml_engine`
+  **97%**, both unchanged; Ruff and Ruff-format clean (`backend/`, `scripts/`, 109 files);
+  Mypy clean (105 files); Phase 4 goldens 1001–1005 byte-for-byte unchanged and the Phase 5
+  ML golden untouched; twin goldens added as **new** files `twin_seed_1001..1005.json`
+  generated only via `pytest --regen-golden` and gated on `TWIN_VERSION`; the Phase 6
+  notebook executes from a fresh kernel (27 cells, 13 code, **0 error outputs**) with a
+  hand-calculated month 1 matching the engine to a worst relative residual of **1.7e-16**.
+- **Documentation:** created `docs/06_digital_twin/phase-report.md`; status synchronized in
+  `README.md`, `docs/master-project-specification.md` and `docs/01_architecture/testing.md`.
+- **No Phase 4 or Phase 5 file, formula, anchor, scoring rule, sensitivity rule or golden
+  fixture was modified.** `scenarios.py`, `stress.py` and `sensitivity.py` (Phases 7/8) were
+  not created. No Phase 7 implementation occurred.
+
+### Deferred (recorded, not implemented)
+
+`D-6-3` frozen §6.3 trough-cash monotonicity needs an explicit decision · `D-6-4`
+annual→monthly conversion for real filings (Phase 3) · `D-6-5` `scenarios.py` (Phase 7) ·
+`D-6-6` `stress.py` / `sensitivity.py` (Phase 8) · `D-6-7` re-scoring the projected end-state
+through Phase 4 for dimension deltas (Phase 8) · `D-6-8` equity / balance-sheet roll-forward ·
+`D-6-9` persistence and a service/API entry point (Phase 10) · `D-6-10` bridging twin
+trajectories into the Phase 5 ML feature matrix.
+
+### Approval gate
+
+**PHASE 6 DOCUMENTATION CLOSURE COMPLETE — AWAITING USER REVIEW.**
+**Next phase after approval: PHASE 7 — SCENARIO ENGINE (not started).**
+
+---
+
 ## Phase 5 — ML Engine (2026-10-02)
 
 **Status:** Engineering complete — documentation closed. Awaiting approval for Phase 6.
