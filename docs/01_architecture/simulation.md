@@ -106,6 +106,15 @@ within 1.25× of the bound, otherwise **rejected** (`SCENARIO_OUT_OF_BOUNDS`). U
 - **Dimension deltas:** risk engine re-scores the stressed end-state (projected balance sheet at
   horizon end) → per-dimension Δ scores.
 
+> **Implementation status note (recorded at Phase 8, 2026-10-03 — not part of the frozen
+> specification above).** §5 is delivered by `backend/simulation/stress.py` and
+> `backend/simulation/sensitivity.py` (`STRESS_VERSION = "1.0.0"`): trajectories, KPI comparison,
+> breach flags, the EBITDA waterfall and single-factor sweeps are implemented, tested and pinned
+> by the new `stress_seed_1001..1005.json` goldens. Two §5 items remain open and are *reported*
+> as open rather than simulated: *dimension deltas* are deferred (D-6-7 — they need Phase 4
+> re-scoring of the projected end-state), and the *current-ratio proxy* breach rule reports
+> `unevaluable` (the twin projects no balance-sheet levels and no proxy formula is frozen).
+
 ## 6. Invariants & tests (frozen for Phases 6/8)
 
 1. **Cash identity:** `Cash_t = Cash_{t-1} + OCF_t − Capex_t − principal_t + draws_t` (±1e-6 relative).
@@ -115,3 +124,12 @@ within 1.25× of the bound, otherwise **rejected** (`SCENARIO_OUT_OF_BOUNDS`). U
 4. **Breach consistency:** breach flag exists iff its condition holds.
 5. **Waterfall closure:** components sum to ΔEBITDA within 0.5%.
 6. **Golden files:** baseline trajectories for fixture seeds 1001–1005 ([testing.md](testing.md)).
+
+> **Implementation status note (recorded at Phase 8, 2026-10-03 — not part of the frozen
+> invariants above).** Invariants 1, 2, 4, 5 and 6 hold in the Phase 6/8 suites.
+> **Invariant 3 is contradicted by the implemented twin**: on a revenue contraction, trough cash
+> can *rise* while EBITDA and DSCR fall, because a shrinking business releases working capital
+> (`OCF = NI + DA − ΔNWC`). The finding is recorded as D-6-3, pinned by
+> `test_d63_trough_cash_not_monotone_documented` and by the Phase 8 goldens, and reported
+> honestly by `sensitivity.py`, which never asserts a sweep direction. Amending invariant 3
+> requires change control; it has **not** been amended here.

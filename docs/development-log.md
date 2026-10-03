@@ -4,6 +4,101 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## Phase 8 — Stress Testing & Impact Analysis (2026-10-03)
+
+**Status:** Engineering complete — documentation closed. Awaiting approval for Phase 9.
+**Scope:** `backend/simulation/stress.py` (baseline-vs-stressed comparison, KPI deltas, frozen
+breach policy, EBITDA waterfall + below-EBITDA bridge) and `backend/simulation/sensitivity.py`
+(single-factor sweeps), plus unit/property/golden tests, the validation notebook and the phase
+report.
+**Upstream (read-only):** Phase 6 `simulate()` / `SimulationRunResult` / `assumption_records`;
+Phase 7 `scenarios.py`; `backend/core/errors.py`.
+**Authority:** `docs/01_architecture/simulation.md` §5–§6 (frozen at Phase 1). The §5 output list
+and every §6 invariant stand as written; two clearly-marked implementation-status notes were
+appended *after* the frozen text (the `testing.md` §7 recorded-status precedent).
+
+- **Created** `stress.py` (`STRESS_VERSION = "1.0.0"`: `run_stress`, `compare_kpis`,
+  `detect_breaches`, `attribute_waterfall`, `resolve_min_cash_buffer`, `BreachPolicy`),
+  `sensitivity.py` (`SWEEPABLE_FIELDS` of nine bounded shocks, 9-point inclusive grid ∪ {0.0},
+  OFAT from the zero-shock baseline, `breach_onset`), 32 unit tests + 3 property tests + 19 golden
+  cases, `stress_seed_1001..1005.json` goldens and
+  `notebooks/08_stress_testing/01_stress_validation.ipynb`.
+- **Locked decisions A–L** recorded in `docs/08_stress_testing/phase-report.md` §2: one module
+  version, one deterministic `simulate()` path for both runs, an undefined Δ% carries a *reason*,
+  breach output is status/records only (no severity labels), frozen listing orders, SHA-256
+  `result_hash`, no `backend/guardrails/` package.
+- **D-6-3 pinned, not resolved:** on seed 1002 a −37.5% revenue contraction *raises* trough cash
+  above the zero-shock baseline while EBITDA and DSCR fall (working-capital release through
+  `OCF = NI + DA − ΔNWC`); the frozen §6.3 monotonicity invariant is contradicted and reported,
+  never smoothed over. Amending it still requires change control.
+- **New honest finding — capacity-ceiling saturation:** seed 1001 runs at its
+  `revenue_capacity` (trailing-12-month maximum) in every baseline month, so positive
+  `revenue_change_pct` shocks raise *demand* but leave revenue — and every KPI — identical to
+  baseline; partially-capped seeds respond and then plateau. This is frozen twin behaviour (§1/§2),
+  surfaced by the sweep, pinned in the notebook and recorded as Phase 8 limitation 8 rather than
+  hidden; downside shocks are unaffected.
+- **Evidence at closure:** **498 tests passing** (444 at Phase 7 closure → +54); `stress.py` and
+  `sensitivity.py` coverage **97%** each (above the ≥80% NFR3 floor); Phase 4/5/6/7 suites green
+  with `seed_100*.json`, `ml_anomaly_golden.json`, `twin_seed_*.json` and the scenario suites
+  untouched; Ruff / Ruff-format / Mypy clean; goldens added as **new** files regenerated only via
+  `pytest --regen-golden` and gated on `STRESS_VERSION`; the notebook executes from a fresh kernel
+  (17 cells, 8 code, **0 error outputs**) with exact waterfall closure, byte-identical repeated
+  `result_hash` and a hand-checked revenue-effect residual of 0.000e+00.
+- **Documentation:** created `docs/08_stress_testing/phase-report.md`; status synchronized in
+  `README.md`, `docs/master-project-specification.md`, `docs/01_architecture/project-overview.md`
+  and `docs/01_architecture/testing.md` (Phase 8 golden family + coverage note);
+  implementation-status notes appended to `simulation.md` §5/§6 with **no invariant amended**;
+  this entry plus a retroactive Phase 7 entry (Phase 7 had been committed without one).
+- **No Phase 4/5/6/7 file, formula, anchor, scoring rule or golden fixture was modified.**
+  `backend/simulation/__init__.py` stays untouched — like Phase 7's `scenarios`, Phase 8 is
+  consumed as a submodule (`from backend.simulation import stress`).
+
+### Deferred (recorded, not implemented)
+
+`D-6-3` frozen §6.3 trough-cash monotonicity (change control) · `D-6-4` annual→monthly conversion
+(Phase 3) · `D-6-7` dimension deltas via Phase 4 re-scoring · `D-6-8` equity / balance-sheet
+roll-forward; reverse stress testing · live scenario translation (Phase 9) · persistence of custom
+breach policies, services and API (Phase 10).
+
+### Approval gate
+
+**PHASE 8 IMPLEMENTATION COMPLETE — AWAITING USER REVIEW BEFORE COMMIT/PUSH.**
+**Next phase after approval: PHASE 9 — MULTI-AGENT LANGGRAPH (not started).**
+
+---
+
+
+## Phase 7 — Scenario Engine (2026-10-03)
+
+**Status:** Engineering complete — approved and committed (`ec5b6aa`); logged retroactively in the
+Phase 8 documentation pass (the phase report shipped with the code, but this log entry was missing).
+**Scope:** `backend/simulation/scenarios.py` — the frozen `simulation.md` §3 schema and §4 presets,
+plus 52 unit tests, 4 property tests and
+`notebooks/07_scenario_engine/01_scenario_validation.ipynb`.
+**Upstream:** Phase 6 `SimulationOverrides` (read-only normalization target);
+`backend/core/errors.py`.
+
+- **Created** `scenarios.py` (`SCENARIO_VERSION = "1.0.0"`): `ScenarioParams` (`extra="forbid"`),
+  clamp-within-1.25× / reject `FIELD_BOUNDS` with `ClampEvent.rule = scenario_bounds.<field>`,
+  the eight frozen presets, the FD-3 confirmation dock (`validate_candidate` → `confirm`
+  re-validates; `cancel`), D-6 normalization `to_overrides` (pct/pp ÷ 100),
+  `normalize_basis_points` (200bp → 2.0pp with mapping note) and SHA-256 `ScenarioProvenance`.
+- **Locked decisions A–L** recorded in `docs/07_scenario_engine/phase-report.md` §2 — including F
+  (`ramp_months > horizon_months` rejected), C (ambiguous "rates rise 2%" stays
+  `awaiting_confirmation` at rate 0.0), K (`one_off_cost` unbounded) and L (no
+  `backend/guardrails/` package; the policy lives in `scenarios.py`).
+- **Evidence at closure:** 444 passed (+56 over Phase 6); `scenarios.py` coverage **100%** (175
+  statements, 0 missed); Phase 4/5/6 suites green and goldens byte-identical; Ruff / format / mypy
+  clean (108 source files); notebook executes fresh-kernel (7 code cells, 0 errors, no twin call);
+  zero new dependencies. Frozen `simulation.md` not modified.
+
+### Approval gate
+
+**PHASE 7 IMPLEMENTATION COMPLETE — APPROVED; COMMITTED `ec5b6aa` (2026-10-03).**
+**Next phase: PHASE 8 — STRESS TESTING.**
+
+---
+
 ## Phase 6 — Business Digital Twin (2026-10-02)
 
 **Status:** Engineering complete — documentation closed. Awaiting approval for Phase 7.

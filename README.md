@@ -51,8 +51,8 @@
 | Stage 5 — Market/Macro Integration | ✅ Approved |
 | Phase 5 — ML Engine | ✅ Complete |
 | Phase 6 — Business Digital Twin | ✅ Complete |
-| Phase 7 — Scenario Engine | ⏳ Planned |
-| Phase 8 — Stress Testing | ⏳ Planned |
+| Phase 7 — Scenario Engine | ✅ Complete |
+| Phase 8 — Stress Testing | ✅ Complete |
 | Phase 9 — Multi-Agent LangGraph | ⏳ Planned |
 | Phase 10 — Backend/API | ⏳ Planned |
 | Phase 11 — Frontend | ⏳ Planned |
@@ -63,13 +63,17 @@
 **Where the project stands today.** The repository contains the frozen research/architecture documents
 (Phases 0–1), the backend foundation (Phase 2), the complete data-engineering pipeline with a
 deterministic synthetic generator (Phase 3), the complete quantitative risk engine with its approved
-Stage 5 market/macro integration (Phase 4), and the ML anomaly engine with SHAP driver attribution
-(Phase 5). This is not yet an end-to-end platform: there is no digital twin, scenario engine,
-stress-testing engine, agent graph, application API or frontend in the repository, and the ML engine
-has no production entry point — it is invoked programmatically from tests and the validation notebook.
+Stage 5 market/macro integration (Phase 4), the ML anomaly engine with SHAP driver attribution
+(Phase 5), the deterministic business digital twin (Phase 6), the bounded scenario engine (Phase 7)
+and the stress-testing engine — baseline-vs-stressed KPI deltas, breach policy, EBITDA waterfall and
+one-factor-at-a-time sweeps (Phase 8). This is not yet an end-to-end platform: there is no agent
+graph, application API or frontend in the repository, and none of the engines has a production entry
+point — the twin, scenario and stress engines are invoked programmatically from tests and validation
+notebooks.
 
 Phases are executed strictly one at a time, and every phase ends with a report plus an explicit approval
-gate. The Phase 5 closure report is [docs/05_ml_engine/phase-report.md](docs/05_ml_engine/phase-report.md).
+gate. The Phase 8 closure report is
+[docs/08_stress_testing/phase-report.md](docs/08_stress_testing/phase-report.md).
 
 ---
 
@@ -86,9 +90,9 @@ flowchart TD
     B --> C["Risk detection<br/>ML anomaly engine (Phase 5, implemented)"]
     C --> D["Quantification<br/>7 risk dimensions to a 0-100 composite"]
     D --> E["Explanation<br/>exact additive contributions (L1)"]
-    E --> F["Scenario generation<br/>bounded schema (Phase 7, planned)"]
-    F --> G["Stress testing<br/>baseline vs scenario (Phase 8, planned)"]
-    G --> H["Impact simulation<br/>monthly digital twin (Phase 6, planned)"]
+    E --> F["Scenario generation<br/>bounded schema (Phase 7, implemented)"]
+    F --> G["Stress testing<br/>baseline vs scenario (Phase 8, implemented)"]
+    G --> H["Impact simulation<br/>monthly digital twin (Phase 6, implemented)"]
     H --> I["Mitigation analysis<br/>curated library (planned)"]
     I --> J["Guardrail validation<br/>numeric verification · policy limits"]
     J --> K["Report<br/>dimension, composite and sensitivity profile"]
@@ -98,9 +102,9 @@ flowchart TD
     classDef partial fill:#fff8e1,stroke:#f9a825,color:#7f6000
     classDef planned fill:#fafafa,stroke:#9e9e9e,stroke-dasharray:5 5,color:#616161
 
-    class A,B,D,E,K done
+    class A,B,C,D,E,F,G,H,K done
     class J partial
-    class C,F,G,H,I,L planned
+    class I,L planned
 ```
 
 ### Architectural boundary
@@ -120,7 +124,7 @@ flowchart TB
         RE["Quantitative risk engine — IMPLEMENTED (Phase 4)"]
         ML["ML anomaly engine — IMPLEMENTED (Phase 5)"]
         TW["Business digital twin — IMPLEMENTED (Phase 6)"]
-        SC["Scenario + stress engine (Phase 7/8, planned)"]
+        SC["Scenario engine (Phase 7) + stress engine (Phase 8) — IMPLEMENTED"]
     end
     subgraph DA["Data, persistence, observability, audit"]
         DE["data_engine — IMPLEMENTED (Phase 3): adapters, cache, provenance, validation, storage"]
@@ -210,19 +214,22 @@ Pure-function, deterministic engine — no FastAPI, LangGraph, LLM or database i
 
 ### Verification
 
-| Gate | Result (re-verified for this publication) |
+| Gate | Result (re-verified at Phase 8 closure) |
 |---|---|
-| Test suite | **270 passed** |
+| Test suite | **498 passed** |
 | `risk_engine` line coverage | **94%** (target ≥ 80%) |
 | `ml_engine` line coverage | **99%** (503 statements) |
+| `simulation` package coverage | **97–100%** (`stress.py` and `sensitivity.py` **97%** each) |
 | Registry coverage | **40 / 40** formulas have a hand-computed fixture |
 | Golden profiles (seeds 1001–1005) | **5 / 5** byte-identical baselines |
 | ML golden (seed 7101) | **1 / 1** pinned fixture, `abs_tol = 1e-9` |
+| Stress goldens (seeds 1001–1005) | **5 / 5** new `STRESS_VERSION`-gated files |
 | Contribution reconciliation | **5 / 5** checks at `abs_tol = 1e-9` |
 | Ruff (`backend`, `scripts`) | **clean** |
-| Ruff format (`backend`, `scripts`) | **clean** (101 files) |
-| Mypy (`backend`) | **clean** (97 source files) |
-| Notebooks (Phase 3, Phase 4, Stage 5, Phase 5) | **4 / 4 execute top-to-bottom on a fresh kernel** |
+| Ruff format (`backend`, `scripts`) | **clean** (119 files) |
+| Mypy (`backend`) | **clean** (115 source files) |
+| Import cycles (Graphify graph) | **0** strongly-connected import components over 1,318 import edges |
+| Notebooks | Phase 8 re-executed on a fresh kernel (17 cells, **0 error outputs**); Phases 3–7 unchanged and previously verified |
 
 *Honest footnote on the ML engine:* on the pinned fixture the **rolling rule baseline beats the
 Isolation Forest** (PR-AUC 0.8304 vs 0.5250), so the retention verdict is `baseline_wins_or_tie` and the
@@ -350,6 +357,8 @@ AI-Business-Risk/
 │   │                         # + Stage 5 market_inputs / macro_inputs / risk_inputs
 │   ├── risk_engine/          # Phase 4 contracts, registry, metrics/, scoring,
 │   │                         #   sensitivity, engine
+│   ├── ml_engine/            # Phase 5 features, Isolation Forest, SHAP, eval
+│   ├── simulation/           # Phase 6 twin · Phase 7 scenarios · Phase 8 stress/sensitivity
 │   └── tests/                # unit · integration · property · golden · fixtures
 ├── docs/
 │   ├── 00_research/          # source-verified research (Phase 0)
@@ -357,11 +366,19 @@ AI-Business-Risk/
 │   ├── 02_foundation/        # Phase 2 report
 │   ├── 03_data-engineering/  # Phase 3 report
 │   ├── 04_quantitative-risk/ # Phase 4 + Stage 5 report
+│   ├── 05_ml_engine/         # Phase 5 report
+│   ├── 06_digital_twin/      # Phase 6 report
+│   ├── 07_scenario_engine/   # Phase 7 report
+│   ├── 08_stress_testing/    # Phase 8 report
 │   ├── development-log.md
 │   └── master-project-specification.md
 ├── notebooks/
 │   ├── 03_data_engineering/  # synthetic data profiling
-│   └── 04_quantitative_risk/ # formula validation · Stage 5 market-inputs validation
+│   ├── 04_quantitative_risk/ # formula validation · Stage 5 market-inputs validation
+│   ├── 05_ml_engine/         # ML validation
+│   ├── 06_digital_twin/      # twin validation
+│   ├── 07_scenario_engine/   # scenario validation
+│   └── 08_stress_testing/    # stress validation
 ├── scripts/                  # generate_company.py · seed_db.py
 ├── README.md
 ├── pyproject.toml
@@ -387,12 +404,12 @@ AI-Business-Risk/
 - [x] Phase 4 — Quantitative Risk Engine
 - [x] Stage 5 — Market/Macro Integration (D18–D21, approved)
 - [x] Phase 5 — ML Engine (Isolation Forest anomaly detection + SHAP attribution, benchmarked against a rule baseline)
+- [x] Phase 6 — Business Digital Twin
+- [x] Phase 7 — Scenario Engine (bounded schema, presets, clamp/validate)
+- [x] Phase 8 — Stress Testing (KPI deltas, breach policy, EBITDA waterfall, OFAT sweeps)
 
 ### Planned
 
-- [x] Phase 6 — Business Digital Twin
-- [ ] Phase 7 — Scenario Engine
-- [ ] Phase 8 — Stress Testing
 - [ ] Phase 9 — Multi-Agent LangGraph (supervisor + specialist agents, transcript tests, numeric verification)
 - [ ] Phase 10 — Backend/API (REST + SSE job lifecycle, weights persistence)
 - [ ] Phase 11 — Frontend (React + Vite + TypeScript dashboard)
@@ -402,10 +419,11 @@ AI-Business-Risk/
 
 **Roadmap stack (none of this is implemented yet — listed only to be explicit about intent):** LangGraph
 (Phase 9); React + Vite + TypeScript with ECharts/Recharts, GSAP/ScrollTrigger, Motion and TanStack Query
-(Phase 11); the digital twin (Phase 6); the full REST/SSE API surface (Phase 10); JWT auth, roles,
+(Phase 11); the full REST/SSE API surface (Phase 10); JWT auth, roles,
 rate limiting and hardening (Phase 12). The only FastAPI surface today is `/api/v1/health`, and the only
-persistence today is the Phase 2 core schema managed with Alembic. Isolation Forest + SHAP **are**
-implemented (Phase 5) but are not yet exposed through any service, API or agent.
+persistence today is the Phase 2 core schema managed with Alembic. Isolation Forest + SHAP (Phase 5), the
+digital twin (Phase 6), the scenario engine (Phase 7) and the stress engine (Phase 8) **are** implemented
+but are not yet exposed through any service, API or agent.
 
 ## Quick Start
 

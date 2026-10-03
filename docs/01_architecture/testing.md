@@ -128,14 +128,18 @@ would reformat. This is recorded as a known condition; no code-target file has a
 Not yet implemented — these must not be claimed as done:
 
 - Hypothesis property testing (see the implementation note in the header).
-- Coverage is measured for `risk_engine` at 94% and for the Phase 6 `simulation` package at 97–100%; the
+- Coverage is measured for `risk_engine` at 94% and for the `simulation` package at 97–100%
+  (`stress.py` and `sensitivity.py` at 97% each since Phase 8); the
   NFR3 targets for `data_engine` and `guardrails` belong to the phases that create those packages, and
   there is no "100% generic coverage" claim anywhere.
 - Golden baselines cover composite **risk** profiles for the canonical seeds 1001–1005
   (`seed_1001.json`…`seed_1005.json`) and, since Phase 6, **twin trajectories** for the same five
   seeds in the separate `twin_seed_1001.json`…`twin_seed_1005.json`. The twin goldens are regenerated
   only by `pytest --regen-golden` and refuse to change without a `TWIN_VERSION` bump, mirroring the
-  `REGISTRY_VERSION` gate on the Phase 4 goldens.
+  `REGISTRY_VERSION` gate on the Phase 4 goldens. Since Phase 8 a third family exists: **stress
+  comparisons and sweep curves** (`stress_seed_1001.json`…`stress_seed_1005.json`), regenerated the
+  same way and refusing to move without a `STRESS_VERSION` bump; the stress golden module never
+  reads, writes or regenerates the Phase 4/5/6 families.
 - CI workflow, Postgres-marked suite, `FakeChatModel` agent tests, recorded transcripts and
   `RUN_LIVE_SMOKE` runs are Phase 9/12 items and do not exist yet.
 

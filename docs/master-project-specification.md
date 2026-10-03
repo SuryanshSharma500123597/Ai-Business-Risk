@@ -1,9 +1,9 @@
 # AI Business Risk — Master Project Specification (Phase 0)
 
 **Project:** AI Business Risk — Autonomous Multi-Agent Business Risk Intelligence & Stress Testing Platform
-**Status:** Phase 0–6 deliverables — **Phases 0–3 approved/complete; Phase 4 engineering-complete with documentation closed (Stage 5 D18–D21 approved); Phase 5 — ML Engine engineering-complete with documentation closed; Phase 6 — Business Digital Twin engineering-complete with documentation closed**. All contracts are frozen in the Phase 1 documents
+**Status:** Phase 0–8 deliverables — **Phases 0–3 approved/complete; Phase 4 engineering-complete with documentation closed (Stage 5 D18–D21 approved); Phase 5 — ML Engine engineering-complete with documentation closed; Phase 6 — Business Digital Twin engineering-complete with documentation closed; Phase 7 — Scenario Engine and Phase 8 — Stress Testing engineering-complete with documentation closed**. All contracts are frozen in the Phase 1 documents
 (see `docs/`: architecture, agents, data, risk-engine, simulation, api, database, requirements,
-testing). The implemented repository currently contains the Phase 2 foundation, the completed Phase 3 data-engineering pipeline, the Phase 4 quantitative risk engine (`backend/risk_engine/` plus the Stage 5 `backend/data_engine/` market/macro adapter layer), the Phase 5 ML engine (`backend/ml_engine/`) and the Phase 6 business digital twin (`backend/simulation/`, implementing the frozen `simulation.md` §1–§2 recursion). **Phase 7 — Scenario Engine has not started.**
+testing). The implemented repository currently contains the Phase 2 foundation, the completed Phase 3 data-engineering pipeline, the Phase 4 quantitative risk engine (`backend/risk_engine/` plus the Stage 5 `backend/data_engine/` market/macro adapter layer), the Phase 5 ML engine (`backend/ml_engine/`), the Phase 6 business digital twin, the Phase 7 scenario engine (`backend/simulation/`, implementing the frozen `simulation.md` §1–§4 recursion and scenario schema) and the Phase 8 stress-testing engine (`backend/simulation/stress.py` + `sensitivity.py`, frozen §5–§6). **Phase 9 — Multi-Agent LangGraph has not started.**
 
 **Companion document:** [phase-0-research.md](00_research/phase-0-research.md) (all external claims, citations, and licensing verdicts live there; accessed 2026-09-21).
 

@@ -1,0 +1,730 @@
+{
+  "horizon_months": 12,
+  "registry_version": "1.0.0",
+  "scenario_version": "1.0.0",
+  "scenarios": {
+    "combined_stress": {
+      "below_bridge": [
+        {
+          "component": "interest_effect",
+          "delta_ni": -186366.37050682225
+        },
+        {
+          "component": "tax_effect",
+          "delta_ni": 913323.6031194157
+        }
+      ],
+      "breaches": [
+        {
+          "observed": 999.0,
+          "periods": [],
+          "rule": "runway_below_6_months",
+          "status": "not_breached",
+          "threshold": 6.0
+        },
+        {
+          "observed": 0.018181105410003697,
+          "periods": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "dscr_below_1_2",
+          "status": "breached",
+          "threshold": 1.2
+        },
+        {
+          "observed": -3.556528595762688,
+          "periods": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "interest_coverage_below_1_5",
+          "status": "breached",
+          "threshold": 1.5
+        },
+        {
+          "observed": 14921266.762273472,
+          "periods": [],
+          "rule": "cash_below_buffer",
+          "status": "not_breached",
+          "threshold": 1180558.5802281376
+        },
+        {
+          "observed": 0.0,
+          "periods": [],
+          "rule": "funding_gap_occurred",
+          "status": "not_breached",
+          "threshold": null
+        },
+        {
+          "observed": null,
+          "periods": [],
+          "rule": "current_ratio_proxy_below_1",
+          "status": "unevaluable",
+          "threshold": 1.0
+        }
+      ],
+      "dimension_deltas": null,
+      "dimension_deltas_status": "deferred",
+      "interaction_residual": 0.0,
+      "kpi_impacts": [
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -6225107.351062739,
+          "delta_pct": -0.9277247824602676,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "trough",
+          "stressed": 484972.47946000204
+        },
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -6225107.351062739,
+          "delta_pct": -0.9277247824602676,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "end",
+          "stressed": 484972.47946000204
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -735690.3958800765,
+          "delta_pct": -0.9876687851606605,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "trough",
+          "stressed": 9185.221263584084
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -735690.3958800765,
+          "delta_pct": -0.9876687851606605,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "end",
+          "stressed": 9185.221263584084
+        },
+        {
+          "baseline": 212164.97341507568,
+          "delta_absolute": -643553.4084720549,
+          "delta_pct": -3.033268866737106,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "trough",
+          "stressed": -431388.43505697924
+        },
+        {
+          "baseline": 238338.37962471665,
+          "delta_absolute": -669585.2881974415,
+          "delta_pct": -2.80938927776449,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "end",
+          "stressed": -431246.9085727248
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 3187762.5362802893,
+          "delta_pct": 0.27168035012238306,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "trough",
+          "stressed": 14921266.762273472
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 7708884.645715654,
+          "delta_pct": 0.6569976451398206,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "end",
+          "stressed": 19442388.871708836
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "trough",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "end",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 0.5526233232788704,
+          "delta_absolute": -0.5344422178688667,
+          "delta_pct": -0.9671003653951301,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "trough",
+          "stressed": 0.018181105410003697
+        },
+        {
+          "baseline": 1.5143874221698146,
+          "delta_absolute": -1.496206316759811,
+          "delta_pct": -0.9879944159969621,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "end",
+          "stressed": 0.018181105410003697
+        }
+      ],
+      "result_hash": "a0e09c83d30a7f1b46d70eadac9f67685e1007f7cb0e76d47b1e3ba41aa24897",
+      "scenario_name": "combined_stress",
+      "validated_params_hash": "a159659a157e5b631d7c3270e411647ea1d9c6e1376ca7dbca284664cf657650",
+      "waterfall": [
+        {
+          "component": "revenue_effect",
+          "delta_ebitda": -16187196.946648845
+        },
+        {
+          "component": "input_cost_effect",
+          "delta_ebitda": -2341671.4641819126
+        },
+        {
+          "component": "opex_effect",
+          "delta_ebitda": 10072071.478344636
+        },
+        {
+          "component": "other_one_off",
+          "delta_ebitda": 1.3387762010097504e-09
+        }
+      ]
+    },
+    "demand_collapse": {
+      "below_bridge": [
+        {
+          "component": "interest_effect",
+          "delta_ni": 0.0
+        },
+        {
+          "component": "tax_effect",
+          "delta_ni": 897918.451163966
+        }
+      ],
+      "breaches": [
+        {
+          "observed": 999.0,
+          "periods": [],
+          "rule": "runway_below_6_months",
+          "status": "not_breached",
+          "threshold": 6.0
+        },
+        {
+          "observed": 0.022045656572835293,
+          "periods": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "dscr_below_1_2",
+          "status": "breached",
+          "threshold": 1.2
+        },
+        {
+          "observed": -4.11972534537137,
+          "periods": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "interest_coverage_below_1_5",
+          "status": "breached",
+          "threshold": 1.5
+        },
+        {
+          "observed": 16972369.44805904,
+          "periods": [],
+          "rule": "cash_below_buffer",
+          "status": "not_breached",
+          "threshold": 1180558.5802281376
+        },
+        {
+          "observed": 0.0,
+          "periods": [],
+          "rule": "funding_gap_occurred",
+          "status": "not_breached",
+          "threshold": null
+        },
+        {
+          "observed": null,
+          "periods": [],
+          "rule": "current_ratio_proxy_below_1",
+          "status": "unevaluable",
+          "threshold": 1.0
+        }
+      ],
+      "dimension_deltas": null,
+      "dimension_deltas_status": "deferred",
+      "interaction_residual": 9.313225746154785e-10,
+      "kpi_impacts": [
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -6612398.013203687,
+          "delta_pct": -0.9854425253072668,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "trough",
+          "stressed": 97681.81731905424
+        },
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -6612398.013203687,
+          "delta_pct": -0.9854425253072668,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "end",
+          "stressed": 97681.81731905424
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -734032.1091980521,
+          "delta_pct": -0.9854425253075277,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "trough",
+          "stressed": 10843.507945608453
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -734032.1091980521,
+          "delta_pct": -0.9854425253075277,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "end",
+          "stressed": 10843.507945608453
+        },
+        {
+          "baseline": 212164.97341507568,
+          "delta_absolute": -628412.5764468389,
+          "delta_pct": -2.9619053811367064,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "trough",
+          "stressed": -416247.6030317632
+        },
+        {
+          "baseline": 238338.37962471665,
+          "delta_absolute": -654585.9826564798,
+          "delta_pct": -2.7464564611338687,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "end",
+          "stressed": -416247.6030317632
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 5238865.222065859,
+          "delta_pct": 0.44648769209629824,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "trough",
+          "stressed": 16972369.44805904
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 10265757.71261276,
+          "delta_pct": 0.8749097895129291,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "end",
+          "stressed": 21999261.93860594
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "trough",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "end",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 0.5526233232788704,
+          "delta_absolute": -0.5305776667060351,
+          "delta_pct": -0.9601072635841134,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "trough",
+          "stressed": 0.022045656572835293
+        },
+        {
+          "baseline": 1.5143874221698146,
+          "delta_absolute": -1.4923417655969793,
+          "delta_pct": -0.9854425253075277,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "end",
+          "stressed": 0.022045656572835293
+        }
+      ],
+      "result_hash": "4ae350a352fb96788061006aa1f679df9db9b82f085eb307856f040d3c06123d",
+      "scenario_name": "demand_collapse",
+      "validated_params_hash": "ff51546171fcecec8df97a9649a8119626597a9cd2683b2e6fd69db98d9aa54e",
+      "waterfall": [
+        {
+          "component": "revenue_effect",
+          "delta_ebitda": -19062845.827307582
+        },
+        {
+          "component": "input_cost_effect",
+          "delta_ebitda": -3.026798367500305e-09
+        },
+        {
+          "component": "opex_effect",
+          "delta_ebitda": 11861370.834377538
+        },
+        {
+          "component": "other_one_off",
+          "delta_ebitda": 4.540197551250458e-09
+        }
+      ]
+    },
+    "recession": {
+      "below_bridge": [
+        {
+          "component": "interest_effect",
+          "delta_ni": 0.0
+        },
+        {
+          "component": "tax_effect",
+          "delta_ni": 844751.2469068263
+        }
+      ],
+      "breaches": [
+        {
+          "observed": 999.0,
+          "periods": [],
+          "rule": "runway_below_6_months",
+          "status": "not_breached",
+          "threshold": 6.0
+        },
+        {
+          "observed": 0.226555007684953,
+          "periods": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "dscr_below_1_2",
+          "status": "breached",
+          "threshold": 1.2
+        },
+        {
+          "observed": -2.8824827801758706,
+          "periods": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "rule": "interest_coverage_below_1_5",
+          "status": "breached",
+          "threshold": 1.5
+        },
+        {
+          "observed": 14965540.412313903,
+          "periods": [],
+          "rule": "cash_below_buffer",
+          "status": "not_breached",
+          "threshold": 1180558.5802281376
+        },
+        {
+          "observed": 0.0,
+          "periods": [],
+          "rule": "funding_gap_occurred",
+          "status": "not_breached",
+          "threshold": null
+        },
+        {
+          "observed": null,
+          "periods": [],
+          "rule": "current_ratio_proxy_below_1",
+          "status": "unevaluable",
+          "threshold": 1.0
+        }
+      ],
+      "dimension_deltas": null,
+      "dimension_deltas_status": "deferred",
+      "interaction_residual": -9.313225746154785e-10,
+      "kpi_impacts": [
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -5706240.148999984,
+          "delta_pct": -0.8503982505608203,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "trough",
+          "stressed": 1003839.681522757
+        },
+        {
+          "baseline": 6710079.830522741,
+          "delta_absolute": -5706240.148999984,
+          "delta_pct": -0.8503982505608203,
+          "delta_pct_reason": "",
+          "metric": "revenue",
+          "scope": "end",
+          "stressed": 1003839.681522757
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -633440.921704548,
+          "delta_pct": -0.8503982505610453,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "trough",
+          "stressed": 111434.6954391126
+        },
+        {
+          "baseline": 744875.6171436606,
+          "delta_absolute": -633440.921704548,
+          "delta_pct": -0.8503982505610453,
+          "delta_pct_reason": "",
+          "metric": "ebitda",
+          "scope": "end",
+          "stressed": 111434.6954391126
+        },
+        {
+          "baseline": 212164.97341507568,
+          "delta_absolute": -527821.3889533348,
+          "delta_pct": -2.4877875949896526,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "trough",
+          "stressed": -315656.4155382591
+        },
+        {
+          "baseline": 238338.37962471665,
+          "delta_absolute": -553994.7951629758,
+          "delta_pct": -2.3244044708002383,
+          "delta_pct_reason": "",
+          "metric": "net_income",
+          "scope": "end",
+          "stressed": -315656.4155382591
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 3232036.1863207202,
+          "delta_pct": 0.27545361761244386,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "trough",
+          "stressed": 14965540.412313903
+        },
+        {
+          "baseline": 11733504.225993183,
+          "delta_absolute": 9605225.651456077,
+          "delta_pct": 0.8186152633053696,
+          "delta_pct_reason": "",
+          "metric": "min_cash",
+          "scope": "end",
+          "stressed": 21338729.87744926
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "trough",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 999.0,
+          "delta_absolute": 0.0,
+          "delta_pct": 0.0,
+          "delta_pct_reason": "",
+          "metric": "runway",
+          "scope": "end",
+          "stressed": 999.0
+        },
+        {
+          "baseline": 0.5526233232788704,
+          "delta_absolute": -0.3260683155939174,
+          "delta_pct": -0.5900371950631071,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "trough",
+          "stressed": 0.226555007684953
+        },
+        {
+          "baseline": 1.5143874221698146,
+          "delta_absolute": -1.2878324144848616,
+          "delta_pct": -0.8503982505610455,
+          "delta_pct_reason": "",
+          "metric": "min_dscr",
+          "scope": "end",
+          "stressed": 0.226555007684953
+        }
+      ],
+      "result_hash": "80c4ce7d7a2d2ecd0e574d0ec64ea04b5e8c3478a514d4f22d3611af85100518",
+      "scenario_name": "recession",
+      "validated_params_hash": "d8e3bcff5b396e6f44ea2249d59b8a4e9e6a1c55c165d8f576ec7b3cc537e4f1",
+      "waterfall": [
+        {
+          "component": "revenue_effect",
+          "delta_ebitda": -13885837.83514106
+        },
+        {
+          "component": "input_cost_effect",
+          "delta_ebitda": 6.984919309616089e-10
+        },
+        {
+          "component": "opex_effect",
+          "delta_ebitda": 8640109.3205453
+        },
+        {
+          "component": "other_one_off",
+          "delta_ebitda": 2.9103830456733704e-09
+        }
+      ]
+    }
+  },
+  "seed": 1004,
+  "sensitivity": {
+    "baseline_point_index": 4,
+    "breach_onset": {
+      "dscr_below_1_2": -50.0,
+      "interest_coverage_below_1_5": -50.0
+    },
+    "breached_rules": [
+      [
+        "dscr_below_1_2",
+        "interest_coverage_below_1_5"
+      ],
+      [
+        "dscr_below_1_2",
+        "interest_coverage_below_1_5"
+      ],
+      [
+        "dscr_below_1_2",
+        "interest_coverage_below_1_5"
+      ],
+      [
+        "dscr_below_1_2",
+        "interest_coverage_below_1_5"
+      ],
+      [
+        "dscr_below_1_2"
+      ],
+      [
+        "dscr_below_1_2"
+      ],
+      [
+        "dscr_below_1_2"
+      ],
+      [
+        "dscr_below_1_2"
+      ],
+      [
+        "dscr_below_1_2"
+      ]
+    ],
+    "field": "revenue_change_pct",
+    "reference": "zero_shock_baseline",
+    "trough_ebitda": [
+      191.2640613482493,
+      2783.2584096464707,
+      24815.811555422915,
+      157793.80840529033,
+      744875.6171436606,
+      744875.6171436606,
+      744875.6171436606,
+      744875.6171436606,
+      744875.6171436606
+    ],
+    "trough_min_cash": [
+      21318623.036959868,
+      20558817.650108222,
+      18512107.412468925,
+      16465397.174829625,
+      11733504.225993183,
+      11733504.225993183,
+      11733504.225993183,
+      11733504.225993183,
+      11733504.225993183
+    ],
+    "values": [
+      -50.0,
+      -37.5,
+      -25.0,
+      -12.5,
+      0.0,
+      12.5,
+      25.0,
+      37.5,
+      50.0
+    ]
+  },
+  "stress_version": "1.0.0",
+  "twin_version": "1.0.0"
+}
