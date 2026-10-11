@@ -1,0 +1,177 @@
+{
+  "audit": {
+    "class_counts": {
+      "0": 6599,
+      "1": 220
+    },
+    "constant_columns": [
+      " Net Income Flag"
+    ],
+    "duplicate_rows": 0,
+    "id_like_columns": [],
+    "leakage_notes": [
+      "No prediction horizon is documented; a random split is NOT out-of-time validation.",
+      "No company identifiers or observation dates are published; entity/temporal leakage cannot be ruled out from the file alone.",
+      "Constant column(s) [' Net Income Flag'] carry no signal and are dropped from features.",
+      "Target 'Bankrupt?' must never be used as a model feature.",
+      "This dataset is independent of the anonymized Kaggle Bankruptcy.csv; never joined."
+    ],
+    "n_columns": 96,
+    "n_features": 95,
+    "n_rows": 6819,
+    "nonfinite_cells": 0,
+    "prevalence": 0.03226279513125092,
+    "target_column": "Bankrupt?",
+    "total_missing_cells": 0
+  },
+  "config": {
+    "cv_folds": 5,
+    "seed": 42,
+    "test_size": 0.2
+  },
+  "no_skill_average_precision": 0.03225806451612903,
+  "provenance": {
+    "attribution": "Taiwanese Bankruptcy Prediction, UCI Machine Learning Repository (id 572, DOI 10.24432/C5004D), CC BY 4.0. Collected from the Taiwan Economic Journal, 1999-2009.",
+    "csv_sha256": "67bf2e7c75490f7ad3f76bbce57d49cdc25967cdab607527b94f944863fa14d8",
+    "dataset": "UCI Taiwanese Bankruptcy Prediction",
+    "dataset_id": 572,
+    "doi": "10.24432/C5004D",
+    "license": "CC BY 4.0",
+    "license_verified": true,
+    "zip_sha256": "c346f5ad2618cb198e7ed8306cf2f31fe3bb2ec60acdbbe1736788d50f269aac"
+  },
+  "results": [
+    {
+      "average_precision": 0.0320084856804143,
+      "balanced_accuracy": 0.5,
+      "config": {
+        "cv_folds": 5,
+        "seed": 42,
+        "test_size": 0.2
+      },
+      "confusion_matrix": [
+        [
+          0,
+          1320
+        ],
+        [
+          0,
+          44
+        ]
+      ],
+      "cv_average_precision_mean": 0.03253444060178303,
+      "cv_average_precision_std": 0.0006291253787735283,
+      "f1": 0.0625,
+      "model": "DummyClassifier(stratified)",
+      "precision": 0.03225806451612903,
+      "prevalence": 0.03225806451612903,
+      "recall": 1.0,
+      "roc_auc": 0.4939393939393939,
+      "threshold": 0.0
+    },
+    {
+      "average_precision": 0.3189765045643962,
+      "balanced_accuracy": 0.7776515151515151,
+      "config": {
+        "cv_folds": 5,
+        "seed": 42,
+        "test_size": 0.2
+      },
+      "confusion_matrix": [
+        [
+          1273,
+          47
+        ],
+        [
+          18,
+          26
+        ]
+      ],
+      "cv_average_precision_mean": 0.3266622129476759,
+      "cv_average_precision_std": 0.04235501763574839,
+      "f1": 0.4444444444444444,
+      "model": "LogisticRegression",
+      "precision": 0.3561643835616438,
+      "prevalence": 0.03225806451612903,
+      "recall": 0.5909090909090909,
+      "roc_auc": 0.9171487603305785,
+      "threshold": 0.8703433096446481
+    },
+    {
+      "average_precision": 0.49548272287444506,
+      "balanced_accuracy": 0.7825757575757576,
+      "config": {
+        "cv_folds": 5,
+        "seed": 42,
+        "test_size": 0.2
+      },
+      "confusion_matrix": [
+        [
+          1286,
+          34
+        ],
+        [
+          18,
+          26
+        ]
+      ],
+      "cv_average_precision_mean": 0.4026492054176411,
+      "cv_average_precision_std": 0.0864280047497226,
+      "f1": 0.5,
+      "model": "RandomForest",
+      "precision": 0.43333333333333335,
+      "prevalence": 0.03225806451612903,
+      "recall": 0.5909090909090909,
+      "roc_auc": 0.9527634297520661,
+      "threshold": 0.38666666666666666
+    },
+    {
+      "average_precision": 0.5237701196611643,
+      "balanced_accuracy": 0.7507575757575757,
+      "config": {
+        "cv_folds": 5,
+        "seed": 42,
+        "test_size": 0.2
+      },
+      "confusion_matrix": [
+        [
+          1292,
+          28
+        ],
+        [
+          21,
+          23
+        ]
+      ],
+      "cv_average_precision_mean": 0.4490687952863185,
+      "cv_average_precision_std": 0.10320489320417257,
+      "f1": 0.4842105263157895,
+      "model": "HistGradientBoosting",
+      "precision": 0.45098039215686275,
+      "prevalence": 0.03225806451612903,
+      "recall": 0.5227272727272727,
+      "roc_auc": 0.9539944903581268,
+      "threshold": 0.041514055790690334
+    }
+  ],
+  "splits": [
+    {
+      "class_counts": {
+        "0": 5279,
+        "1": 176
+      },
+      "n_rows": 5455,
+      "name": "train",
+      "prevalence": 0.03226397800183318
+    },
+    {
+      "class_counts": {
+        "0": 1320,
+        "1": 44
+      },
+      "n_rows": 1364,
+      "name": "test",
+      "prevalence": 0.03225806451612903
+    }
+  ]
+}

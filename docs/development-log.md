@@ -4,6 +4,153 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## Independent UCI Bankruptcy Benchmark (Workstream D, 2026-10-11)
+
+**Status:** Complete — isolated supervised experiment on the official UCI
+Taiwanese Bankruptcy Prediction dataset (id 572, DOI 10.24432/C5004D, CC BY 4.0).
+New modules `backend/external_data/uci_bankruptcy.py` (loader/audit) and
+`uci_benchmark.py` (orchestration); tests
+`backend/tests/unit/test_uci_bankruptcy_eval.py` (11); plan and report under
+`docs/external-evaluation/`; immutable raw bytes under `data/raw/uci/`;
+results under `data/processed/uci-bankruptcy/benchmark_results.json`.
+
+**What was measured (real, not assumed):** 6,819 rows × 96 cols; target
+`Bankrupt?`; 220 positives (3.2263%); 0 duplicates / 0 missing / 0 non-finite;
+1 constant column. Fixed-seed (42) stratified 80/20 split (train 5,455 / test
+1,364), 5-fold CV on training for model selection and F1-optimal threshold.
+No-skill AP reference = prevalence = 0.03226. Test metrics (AP / ROC-AUC):
+DummyClassifier 0.0320 / 0.4939; LogisticRegression 0.3190 / 0.9171;
+RandomForest 0.4955 / 0.9528; HistGradientBoosting 0.5238 / 0.9540. Every
+supervised model beats no-skill; HistGradientBoosting is strongest.
+
+**Honesty constraints preserved:** the dataset has no documented prediction
+horizon and no company IDs/dates, so this is a single-split classification
+benchmark — **not** out-of-time validation and **not** years-in-advance
+forecasting. It is strictly separated from the anonymized Kaggle
+`Bankruptcy.csv` (never joined/relabeled). No frozen phase, formula, golden, or
+the anonymized dataset was modified. Tests: 11 new (suite 523 → **544**).
+`ruff check backend` clean, `mypy` clean.
+
+**Approval gate:** Workstream D implementation is complete and tested, but **NOT
+committed or pushed**. User review is required before any staging/commit. This
+log entry and the Workstream D files remain uncommitted.
+
+---
+
+## Digital Twin & Stress-Testing Validation (Workstream F, 2026-10-11)
+
+**Status:** Complete — read-only w.r.t. frozen Phases 6–8; one validation report
+(`docs/external-evaluation/digital-twin-stress-validation-report.md`), one
+additive independent test file (`backend/tests/unit/test_twin_stress_independent.py`,
+10 tests), and this entry. **No frozen code, formulas, defaults, thresholds,
+schemas, goldens, or raw data changed.**
+
+**What was audited.** Traced the frozen monthly recursion (`twin.py::step_month`),
+six invariants, the Phase-4 ratio wiring (`DSCR = EBITDA/(interest+principal)`,
+999.0 sentinels), and the Phase-8 stress pipeline (`compare_kpis`, `detect_breaches`,
+`attribute_waterfall`, `resolve_min_cash_buffer`). Confirmed D-6-3 is
+**resolved-as-documented** (working-capital release can raise trough cash under a
+revenue contraction; the naive monotonicity invariant is the wrong part) and
+D-6-7 is a correct **deferral** (no projected balance sheet ⇒ no dimension deltas;
+current-ratio proxy is `unevaluable`, not fabricated).
+
+**Four additive independent checks (all pass).** G1 — missing revenue/cash/debt are
+refused with `ValueError`, never imputed. G2 — DSCR sentinel on zero debt service;
+coverage sentinel on zero interest with positive service; negative DSCR (EBITDA<0);
+negative coverage (EBIT<0). G3 — every waterfall bucket **and** the below-EBITDA
+bridge recomputed from raw monthly records (existing tests checked only closure +
+`revenue_effect`). G4 — the positive-denominator DSCR identity, hand-pinned.
+Expected values derived by hand, never read from engine output.
+
+**Not claimed.** Implementation correctness and financial coherence are addressed;
+**empirical (real-world) validity is not** — synthetic stress scenarios do not
+validate historical predictive performance.
+
+**Approval gate:** not staged, not committed, not pushed. Awaits explicit user
+review before any Git action.
+
+---
+
+## Anomaly Stability + Provenance/Licensing Audit (Workstreams C & E, 2026-10-11)
+
+**Status:** Complete — awaiting user review before commit/push. Read-only w.r.t. frozen Phases 4–8; two new
+reports, one isolated analysis module + tests, two real figures, small JSON evidence, and this log entry.
+**No frozen code, formulas, goldens, raw data, or model methodology changed. No new detector, no retuning, no
+fabricated labels or metrics.**
+
+**Scope:** `backend/external_data/stability.py` (isolated; imports & calls frozen Phase 5 only),
+`backend/tests/unit/test_external_stability.py` (10 tests), `docs/external-evaluation/anomaly-stability-analysis.md`,
+`docs/external-evaluation/dataset-provenance-and-licensing.md`, figures `docs/assets/external-evaluation/cross-dataset/{threshold-sensitivity,seed-rank-stability}.png`,
+evidence `data/processed/kaggle/stability/{threshold_sensitivity,seed_rank_stability}.json`, assets-README index update.
+
+- **C1 threshold sensitivity:** swept expected rates 0.02–0.30 on the frozen seed-42 model. Flag sets are
+  **perfectly nested** (single frozen ranking) so Jaccard reflects set-size nesting, not rank churn. Flag counts
+  are **operating choices**, not anomaly prevalence. **Reproduction validated:** recomputed reference flags match
+  the committed artifacts exactly — Bankruptcy **834==834**, FS **27==27** (`exact_match: true`, 0 mismatches).
+- **C2 seed stability:** refit frozen IF at seeds 42(ref)/43/44/45/46 via the frozen public API
+  (`IsolationForestConfig(random_state=seed)`; only the seed varies). **Global ranking stable** (Spearman 0.96–0.99)
+  but **top-k membership moves ~7–18%**; flagged count seed-invariant (train-quantile). Repeatability, **not** accuracy.
+- **C3 rule baseline:** deterministic (no seed → zero variance). FS per-company chronological/past-only: **60 flagged
+  of 64 scorable; 96 unscorable** (< 8 within-company prior periods). Bankruptcy **unavailable** (cross-sectional).
+- **SHAP (unchanged, re-confirmed):** runtime `shap.explainers._permutation.PermutationExplainer`; frozen label
+  `shap_exact` preserved (golden-protected misnomer, dev-log D-1); no "exact TreeSHAP" claim anywhere.
+- **E provenance:** **UCI 572 verified** (DOI 10.24432/C5004D, 6,819×95 + `Bankrupt?`, CC BY 4.0 on-page) — a
+  **separate** benchmark, **not** the anonymized file's source. Bankruptcy origin verified via **secondary** Univ.
+  of Trieste readme (EMIS, Polish companies; `attr1–64` financial ratios; `class` 0/1 in the separate train file;
+  **no license**). **Both Kaggle licenses UNVERIFIED** (JS-rendered pages). ODbL 1.0 + CC BY 4.0 legal texts
+  verified. **MSFT FY2023 spot-check** (1/161): dataset Revenue $211.9B / Net Income $72.4B match the SEC 10-K.
+
+**Verification:** full `pytest -q` → **523 passed** (513 + 10 new), exit 0; `ruff check backend` → clean, exit 0;
+configured `mypy` → **Success (126 files)**, exit 0; `git diff --check` → exit 0; raw SHA-256 **unchanged** (both
+match); frozen Phases 4–8 + goldens diff **empty**.
+
+**Unresolved limitations:** both Kaggle licenses unverified → no raw redistribution; FS original publisher
+unconfirmed; only 1/161 FS rows spot-checked; UCI horizon undefined. Predictive generalization remains **NOT
+established** (no labels). No models trained, no datasets downloaded.
+
+**Approval gate:** no commit, push, stage, reset, rebase, or amend has occurred. Only the authorized files above
+changed; the six untracked intermediates and `python.ipynb` are preserved. User review is required before staging.
+
+---
+
+**Status:** Research/feasibility complete — awaiting user review before commit/push. Read-only investigation;
+**no data downloaded, no labels obtained, no models trained, no frozen code or raw data touched.**
+
+**Scope:** one new report, `docs/external-evaluation/ground-truth-feasibility.md`, plus this log entry.
+Consumes the committed external-evaluation report and provenance records as evidence; adds nothing executable.
+
+- **Objective:** determine whether a credible, independently verifiable bankruptcy/financial-distress dataset
+  with **genuine outcome labels** can enable a future supervised evaluation — following the prior experiment's
+  finding that neither Kaggle dataset carries labels.
+- **Candidates investigated (targeted, not exhaustive):**
+  1. **UCI 572 Taiwanese Bankruptcy Prediction** — 6,819 rows, 95 features + `Bankrupt?` (0/1) target,
+     **CC BY 4.0 (verified)**, anonymized (no company ID, no dates), Taiwan Economic Journal 1999–2009.
+     **Verdict: FEASIBLE** as a new independent labeled benchmark.
+  2. **Kaggle `fedesoriano/company-bankruptcy-prediction`** — mirror of UCI 572; license **reported CC BY 4.0 but
+     NOT independently verified this session** (Kaggle pages are JS-rendered and did not return body content).
+     Verdict: FEASIBLE but redundant vs. the verified UCI source.
+  3. **Florida-UCLA-LoPucki BRD** — ~1,000+ large-cap bankruptcies with company IDs and filing dates, but
+     **registration + click-through agreement, asserted copyright, no commercial/redistribution grant, and
+     positives-only population**. **Verdict: BLOCKED.**
+- **Decisive linkage finding:** new labels **cannot** be attached to the existing anonymized `Attr1–Attr64`
+  file — it has no identifiers/dates and a different feature space (64 vs 95); no published 64↔95 mapping
+  exists; the prior companion-train overlap was only 55/5,000. Any supervised evaluation must be a
+  **self-contained independent experiment**, not a relabeling of the current rows.
+- **Recommendation:** adopt **UCI 572** as a future Workstream D benchmark; confirm class balance (assumed
+  imbalanced → PR-AUC primary) and **define the prediction horizon** before any training (UCI metadata states
+  none). Do not merge with the existing file.
+- **Verification:** branch `main`, HEAD `dd6ac7e`; raw SHA-256 unchanged (Bankruptcy `4d3c0735…6eeba64`,
+  Financial Statements `32e38512…5cb1b5`); frozen Phases 4–8 and goldens untouched; no commit or push.
+
+**Unresolved limitations:** survey is targeted (not exhaustive); Kaggle mirror license unverified; no data
+downloaded; UCI horizon undefined and class balance unverified; 64↔95 feature mapping unknown. Predictive
+generalization remains NOT established — it is unblocked (UCI 572) but not yet performed.
+
+**Approval gate:** no commit, push, stage, reset, rebase, or amend has occurred. Only the two authorized files
+(above report + this entry) changed. User review is required before any further action.
+
+---
+
 ## External Financial Dataset Evaluation & Scientific Audit (2026-10-10)
 
 **Status:** Engineering and audit complete — awaiting user review before commit/push. An independent
