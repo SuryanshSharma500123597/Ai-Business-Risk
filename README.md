@@ -502,6 +502,8 @@ touches an external endpoint.
 | [docs/01_architecture/requirements.md](docs/01_architecture/requirements.md) | Functional and non-functional requirements |
 | [docs/01_architecture/testing.md](docs/01_architecture/testing.md) | Test strategy, fixtures, golden policy, implementation status |
 | [docs/development-log.md](docs/development-log.md) | Phase-by-phase development log |
+| [docs/development/project-artifact-protocol.md](docs/development/project-artifact-protocol.md) | Permanent artifact rules: regenerate-not-hand-edit, raw read-only, no fabricated results, determinism, verify-before-claiming, frozen-phase integrity |
+| [docs/external-evaluation/external-financial-dataset-evaluation.md](docs/external-evaluation/external-financial-dataset-evaluation.md) | External Kaggle dataset evaluation: audits, preprocessing, Risk Engine mapping, applicability-gated baseline, explainability, cross-dataset comparison |
 | [docs/02_foundation/phase-report.md](docs/02_foundation/phase-report.md) | Phase 2 completion report |
 | [docs/03_data-engineering/phase-report.md](docs/03_data-engineering/phase-report.md) | Phase 3 completion report |
 | [docs/04_quantitative-risk/phase-report.md](docs/04_quantitative-risk/phase-report.md) | Phase 4 + Stage 5 completion report |

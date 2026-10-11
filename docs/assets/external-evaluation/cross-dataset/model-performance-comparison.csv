@@ -1,0 +1,3 @@
+dataset,method,n_observations,n_features,flagged,flag_rate,evaluation
+bankruptcy,Isolation Forest (frozen Phase 5),5000,64,834,0.1668,unavailable (no labels)
+financial-statements,Isolation Forest (frozen Phase 5),160,20,27,0.16875,unavailable (no labels)

@@ -1,0 +1,7 @@
+{
+  "available": false,
+  "dataset_id": "financial-statements",
+  "detail": {},
+  "metrics": {},
+  "reason": "Financial Statements.csv contains no target column of any kind; unsupervised anomaly scores cannot be evaluated against outcomes."
+}

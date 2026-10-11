@@ -1,0 +1,62 @@
+{
+  "bytes": 24551,
+  "columns": 23,
+  "configuration": {
+    "anomaly_model": {
+      "contamination": "auto",
+      "method": "IsolationForest (frozen Phase 5 contract)",
+      "n_estimators": 200,
+      "random_state": 42,
+      "scaling": "robust median/IQR inside fit_isolation_forest"
+    },
+    "attribution_sample": 100,
+    "external_eval_version": "1.0.0",
+    "packages": {
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1"
+    },
+    "python": "3.12.10",
+    "random_seed": 42,
+    "rule_baseline": {
+      "iqr_multiplier": 1.5,
+      "method": "rolling z-score / IQR (frozen parameters)",
+      "min_periods": 8,
+      "window": 12,
+      "z_threshold": 3.0
+    },
+    "top_examples": 5
+  },
+  "dataset_id": "financial-statements",
+  "environment": {
+    "packages": {
+      "joblib": "1.6.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "pydantic": "2.13.5",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "shap": "0.52.0"
+    },
+    "platform": "Windows",
+    "python": "3.12.10"
+  },
+  "file_name": "Financial Statements.csv",
+  "recorded_at_utc": "2026-10-11T10:38:06.715033+00:00",
+  "rows": 161,
+  "seeds": {
+    "attribution": 42,
+    "model": 42
+  },
+  "sha256": "32e38512643a626340b43a4255bf79d45a7afc66ffe9058326507cc2885cb1b5",
+  "source": {
+    "kaggle_ref": "rish59/financial-statements-of-major-companies2009-2023",
+    "license": "ODbL / Database Contents (as declared on the Kaggle page; redistribution not recommended)",
+    "license_verified": false,
+    "name": "rish59/financial-statements-of-major-companies2009-2023",
+    "url": "https://www.kaggle.com/datasets/rish59/financial-statements-of-major-companies2009-2023",
+    "verification": "SHA-256 equality with the downloaded upstream data.csv; local file renamed to Financial Statements.csv"
+  }
+}

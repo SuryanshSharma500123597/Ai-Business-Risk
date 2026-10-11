@@ -1,0 +1,42 @@
+{
+  "dataset_id": "financial-statements",
+  "encoding": "none (all features numeric; Company/Category excluded)",
+  "features": [
+    "Market Cap(in B USD)",
+    "Revenue",
+    "Gross Profit",
+    "Net Income",
+    "Earning Per Share",
+    "EBITDA",
+    "Share Holder Equity",
+    "Cash Flow from Operating",
+    "Cash Flow from Investing",
+    "Cash Flow from Financial Activities",
+    "Current Ratio",
+    "Debt/Equity Ratio",
+    "ROE",
+    "ROA",
+    "ROI",
+    "Net Profit Margin",
+    "Free Cash Flow per Share",
+    "Return on Tangible Equity",
+    "Number of Employees",
+    "Inflation Rate(in US)"
+  ],
+  "missing_value_strategy": "drop incomplete rows inside frozen fit_isolation_forest; no imputation",
+  "notes": [
+    "Company/Year/Category excluded from features (identifiers/time/metadata)",
+    "annual panel: Risk Engine evaluated per company; Digital Twin not applicable"
+  ],
+  "random_seed": 42,
+  "row_filter": "complete rows only (frozen contract frame.dropna())",
+  "scaling": "none at adapter stage; robust median/IQR inside frozen Isolation Forest",
+  "transforms": [
+    "strict schema validation against the 24 verified source columns",
+    "Year coerced to int; Company/Category kept as metadata (never features)",
+    "numeric columns coerced to float (invalid parses become NaN and drop out)",
+    "no imputation: complete rows only, matching frozen fit_isolation_forest",
+    "no target-derived handling needed (no target column present)"
+  ],
+  "version": "1.0.0"
+}

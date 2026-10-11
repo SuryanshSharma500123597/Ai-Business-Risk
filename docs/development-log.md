@@ -4,6 +4,64 @@ Running log of phases, decisions, and open questions. Newest phase at the top.
 
 ---
 
+## External Financial Dataset Evaluation & Scientific Audit (2026-10-10)
+
+**Status:** Engineering and audit complete — awaiting user review before commit/push. An independent
+external-validation experiment, not a new numbered phase; it consumes frozen Phases 4–5 as read-only
+inputs and adds an isolated `backend/external_data/` layer.
+
+**Scope:** `backend/external_data/` (10 modules: `contracts`, `provenance`, `preprocessing`,
+`bankruptcy`, `financial_statements`, `evaluation`, `risk_mapping`, `figures`, `run_experiment`,
+`__init__`), 15 external-evaluation tests, two executed-artifact trees, the research report, the
+experiment notebook, the assets index, and `docs/development/project-artifact-protocol.md`.
+
+- **Datasets (raw, read-only, never merged):**
+  `data/raw/kaggle/bankruptcy/Bankruptcy.csv` (5,000 rows × 65 cols: `ID` + `Attr1..Attr64`), and
+  `data/raw/kaggle/financial statements/Financial Statements.csv` (161 rows × 23 cols, 12 companies,
+  2009–2023 annual; note the space in the directory name).
+- **Verified unlabeled-data limitation:** Bankruptcy is the unlabeled competition test matrix
+  (`lupitaastari/bankruptcy`); its companion train file is a different row set, and label recovery
+  failed (no Kaggle credentials reachable). Financial Statements has no target column. **Supervised
+  predictive performance was therefore NOT measured** — both `evaluation.json` files record
+  `"available": false`. The existing Phase 5 Isolation Forest and rule baseline were applied with the
+  frozen configuration, and Risk Engine mapping (Phase 4, unmodified) was evaluated.
+- **Corrected baseline finding (applicability gating):** the frozen rolling z-score/IQR baseline
+  assumes an ordered series. Bankruptcy is **cross-sectional → baseline unavailable** (the pooled
+  run's 92.3 % was meaningless). Financial Statements is now evaluated **per company, ascending-year,
+  past-only** — **60 flagged of 64 scorable rows** (96 unscorable: fewer than the frozen `min_periods=8`
+  within-company predecessors). 60/64 is a frozen-rule output on a short annual series, **not verified
+  anomaly prevalence**. Frozen Phase 5 code was never modified — only gated/wrapped.
+- **Corrected SHAP terminology:** the frozen label `shap_exact` is preserved (a golden fixture depends
+  on it) but is a misnomer. The runtime explainer is `shap.explainers._permutation.PermutationExplainer`
+  (a seeded Monte-Carlo permutation-family Shapley estimator); `explainer_runtime_class` /
+  `attribution_method` now record this accurately, and every "exact TreeSHAP" claim was withdrawn.
+- **Artifacts generated:** `docs/external-evaluation/external-financial-dataset-evaluation.md`;
+  `notebooks/external_evaluation/01_kaggle_financial_risk_evaluation.ipynb` (executed, 10 code cells,
+  0 error outputs); **17 PNGs** under `docs/assets/external-evaluation/` with an index README; **24
+  JSON + 4 CSV** machine-readable artifacts under `data/processed/kaggle/` (JSON/CSV evidence for
+  audits, leakage, anomaly runs, provenance, evaluations, rule baselines, explanations, Risk-Engine
+  mapping, cross-dataset comparison); and the permanent artifact protocol above.
+- **Verification at closure:** **513 tests passing** (498 before this work → +15); `ruff check backend`
+  **clean (exit 0)**; configured `mypy` **Success — no issues in 126 files (exit 0)**; the notebook
+  re-executed top-to-bottom with 0 errors; both raw-dataset **SHA-256 hashes match** the pre-execution
+  values (`4d3c0735…eeba64`, `32e38512…5cb1b5`); Graphify regenerated (`graphify update . --no-cluster`,
+  2310 nodes / 6975 links, `backend/external_data` present).
+- **Frozen-phase integrity:** **no Phase 4/5/6/7/8 file, formula, registry, scenario schema, stress
+  methodology, or golden fixture was modified**; `git diff` over `backend/risk_engine`,
+  `backend/ml_engine`, `backend/simulation`, `backend/stress`, and `backend/tests/golden` is empty. The
+  external layer only wraps/gates frozen code.
+- **Remaining limitation:** *operational* generalization is verified (the frozen pipeline runs
+  deterministically on both independent datasets with clean leakage audits), but *predictive*
+  generalization is **not established** — there is no ground-truth label to validate a predictive
+  claim on either dataset.
+
+### Approval gate
+
+**EXTERNAL EVALUATION COMPLETE — AWAITING USER REVIEW BEFORE COMMIT/PUSH.** No commit, push, reset,
+or rebase has been performed. Staging inventory awaits approval.
+
+---
+
 ## Phase 8 — Stress Testing & Impact Analysis (2026-10-03)
 
 **Status:** Engineering complete — documentation closed. Awaiting approval for Phase 9.

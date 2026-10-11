@@ -1,0 +1,528 @@
+{
+  "composite_scores": {
+    "AAPL": 23.0525,
+    "AIG": 22.16314337745558,
+    "AMZN": 25.652406409706874,
+    "BCS": 29.481451901313488,
+    "GOOG": 21.520130446176307,
+    "INTC": 23.477564404656693,
+    "MCD": 26.979261290532303,
+    "MSFT": 20.803950662293968,
+    "NVDA": 22.27672419417461,
+    "PCG": 29.408533669368204,
+    "PYPL": 21.846171599417797,
+    "SHLDQ": 34.85953459978514
+  },
+  "dataset_id": "financial-statements",
+  "dimension_scores": {
+    "concentration": {
+      "AAPL": 18.333333333333332,
+      "AIG": 18.333333333333332,
+      "AMZN": 18.333333333333332,
+      "BCS": 18.333333333333332,
+      "GOOG": 18.333333333333332,
+      "INTC": 18.333333333333332,
+      "MCD": 18.333333333333332,
+      "MSFT": 18.333333333333332,
+      "NVDA": 18.333333333333332,
+      "PCG": 18.333333333333332,
+      "PYPL": 18.333333333333332,
+      "SHLDQ": 18.333333333333332
+    },
+    "credit": {
+      "AAPL": 15.0,
+      "AIG": 15.0,
+      "AMZN": 15.0,
+      "BCS": 15.0,
+      "GOOG": 15.0,
+      "INTC": 15.0,
+      "MCD": 15.0,
+      "MSFT": 15.0,
+      "NVDA": 15.0,
+      "PCG": 15.0,
+      "PYPL": 15.0,
+      "SHLDQ": 15.0
+    },
+    "financial_strength": {
+      "AAPL": 23.731666666666666,
+      "AIG": 18.39552693140015,
+      "AMZN": 39.331105124907914,
+      "BCS": 47.05605095327644,
+      "GOOG": 16.362202511087514,
+      "INTC": 26.28205309460684,
+      "MCD": 47.903733621103754,
+      "MSFT": 15.833333333333332,
+      "NVDA": 19.07701183171433,
+      "PCG": 44.87267557526062,
+      "PYPL": 25.07317454515245,
+      "SHLDQ": 76.86754081347543
+    },
+    "liquidity": {
+      "AAPL": null,
+      "AIG": null,
+      "AMZN": null,
+      "BCS": null,
+      "GOOG": null,
+      "INTC": null,
+      "MCD": null,
+      "MSFT": null,
+      "NVDA": null,
+      "PCG": null,
+      "PYPL": null,
+      "SHLDQ": null
+    },
+    "macro": {
+      "AAPL": 35.0,
+      "AIG": 35.0,
+      "AMZN": 35.0,
+      "BCS": 35.0,
+      "GOOG": 35.0,
+      "INTC": 35.0,
+      "MCD": 35.0,
+      "MSFT": 35.0,
+      "NVDA": 35.0,
+      "PCG": 55.0,
+      "PYPL": 35.0,
+      "SHLDQ": 35.0
+    },
+    "market": {
+      "AAPL": 33.75,
+      "AIG": 33.75,
+      "AMZN": 33.75,
+      "BCS": 48.99932712127118,
+      "GOOG": 31.925246832637,
+      "INTC": 33.75,
+      "MCD": 33.13850078875674,
+      "MSFT": 28.157037307097156,
+      "NVDA": 33.75,
+      "PCG": 30.745193107615297,
+      "PYPL": 25.170521718021018,
+      "SHLDQ": 51.45633345190209
+    },
+    "operational": {
+      "AAPL": 12.5,
+      "AIG": 12.5,
+      "AMZN": 12.5,
+      "BCS": 12.5,
+      "GOOG": 12.5,
+      "INTC": 12.5,
+      "MCD": 12.5,
+      "MSFT": 12.5,
+      "NVDA": 12.5,
+      "PCG": 12.5,
+      "PYPL": 12.5,
+      "SHLDQ": 12.5
+    }
+  },
+  "mapping_policy": "exact semantics to canonical PeriodFinancials; total_debt derived",
+  "metrics": {
+    "altman_z_distance": {
+      "dimension": "credit",
+      "metric_id": "altman_z_distance",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "score"
+    },
+    "beta": {
+      "dimension": "market",
+      "metric_id": "beta",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "ratio"
+    },
+    "cash_ratio": {
+      "dimension": "liquidity",
+      "metric_id": "cash_ratio",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "cash_runway_months": {
+      "dimension": "liquidity",
+      "metric_id": "cash_runway_months",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "months"
+    },
+    "ccc": {
+      "dimension": "operational",
+      "metric_id": "ccc",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "days"
+    },
+    "commodity_exposure_score": {
+      "dimension": "market",
+      "metric_id": "commodity_exposure_score",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "index"
+    },
+    "cr1": {
+      "dimension": "concentration",
+      "metric_id": "cr1",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "ratio"
+    },
+    "cr3": {
+      "dimension": "concentration",
+      "metric_id": "cr3",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "ratio"
+    },
+    "current_ratio": {
+      "dimension": "liquidity",
+      "metric_id": "current_ratio",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "debt_to_ebitda": {
+      "dimension": "financial_strength",
+      "metric_id": "debt_to_ebitda",
+      "sample_values": [
+        0.919767,
+        1.316774,
+        1.239649
+      ],
+      "statuses": {
+        "flagged": 1,
+        "valid": 11
+      },
+      "unit": "ratio"
+    },
+    "debt_to_equity": {
+      "dimension": "financial_strength",
+      "metric_id": "debt_to_equity",
+      "sample_values": [
+        2.3695,
+        0.6435,
+        0.4598
+      ],
+      "statuses": {
+        "flagged": 2,
+        "valid": 10
+      },
+      "unit": "ratio"
+    },
+    "dio": {
+      "dimension": "operational",
+      "metric_id": "dio",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "days"
+    },
+    "dpo": {
+      "dimension": "operational",
+      "metric_id": "dpo",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "days"
+    },
+    "dscr": {
+      "dimension": "financial_strength",
+      "metric_id": "dscr",
+      "sample_values": [
+        999.0,
+        999.0,
+        999.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "ratio"
+    },
+    "dso": {
+      "dimension": "credit",
+      "metric_id": "dso",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "days"
+    },
+    "equity_volatility": {
+      "dimension": "market",
+      "metric_id": "equity_volatility",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "percent"
+    },
+    "es_95": {
+      "dimension": "market",
+      "metric_id": "es_95",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "percent"
+    },
+    "fx_exposure_score": {
+      "dimension": "market",
+      "metric_id": "fx_exposure_score",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "index"
+    },
+    "fx_volatility": {
+      "dimension": "macro",
+      "metric_id": "fx_volatility",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "percent"
+    },
+    "gdp_sensitivity": {
+      "dimension": "macro",
+      "metric_id": "gdp_sensitivity",
+      "sample_values": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "index"
+    },
+    "gross_margin": {
+      "dimension": "financial_strength",
+      "metric_id": "gross_margin",
+      "sample_values": [
+        43.309631,
+        36.787923,
+        43.80534
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "percent"
+    },
+    "hhi": {
+      "dimension": "concentration",
+      "metric_id": "hhi",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 36
+      },
+      "unit": "ratio"
+    },
+    "inflation_passthrough": {
+      "dimension": "macro",
+      "metric_id": "inflation_passthrough",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "percentage_points"
+    },
+    "interest_coverage": {
+      "dimension": "financial_strength",
+      "metric_id": "interest_coverage",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "merton_dd": {
+      "dimension": "credit",
+      "metric_id": "merton_dd",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "sigmas"
+    },
+    "net_margin": {
+      "dimension": "financial_strength",
+      "metric_id": "net_margin",
+      "sample_values": [
+        25.309641,
+        18.156529,
+        -0.52959
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "percent"
+    },
+    "operating_margin": {
+      "dimension": "financial_strength",
+      "metric_id": "operating_margin",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "percent"
+    },
+    "opex_rigidity": {
+      "dimension": "operational",
+      "metric_id": "opex_rigidity",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "quick_ratio": {
+      "dimension": "liquidity",
+      "metric_id": "quick_ratio",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "rate_environment": {
+      "dimension": "macro",
+      "metric_id": "rate_environment",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "percentage_points"
+    },
+    "rate_sensitivity": {
+      "dimension": "market",
+      "metric_id": "rate_sensitivity",
+      "sample_values": [
+        0.459884,
+        0.658387,
+        0.619825
+      ],
+      "statuses": {
+        "flagged": 1,
+        "valid": 11
+      },
+      "unit": "percent"
+    },
+    "receivable_trend": {
+      "dimension": "credit",
+      "metric_id": "receivable_trend",
+      "sample_values": [],
+      "statuses": {
+        "insufficient_history": 12
+      },
+      "unit": "days_per_year"
+    },
+    "revenue_volatility": {
+      "dimension": "market",
+      "metric_id": "revenue_volatility",
+      "sample_values": [
+        74.932246,
+        31.396607,
+        30.25352
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "percent"
+    },
+    "roa": {
+      "dimension": "financial_strength",
+      "metric_id": "roa",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "percent"
+    },
+    "roe": {
+      "dimension": "financial_strength",
+      "metric_id": "roe",
+      "sample_values": [
+        196.958873,
+        24.261868,
+        -1.863835
+      ],
+      "statuses": {
+        "flagged": 2,
+        "valid": 10
+      },
+      "unit": "percent"
+    },
+    "single_source_flags": {
+      "dimension": "operational",
+      "metric_id": "single_source_flags",
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "statuses": {
+        "valid": 12
+      },
+      "unit": "count"
+    },
+    "st_obligation_coverage": {
+      "dimension": "liquidity",
+      "metric_id": "st_obligation_coverage",
+      "sample_values": [],
+      "statuses": {
+        "missing_input": 12
+      },
+      "unit": "ratio"
+    },
+    "var_95": {
+      "dimension": "market",
+      "metric_id": "var_95",
+      "sample_values": [],
+      "statuses": {
+        "unavailable": 12
+      },
+      "unit": "percent"
+    }
+  },
+  "metrics_computable": 15,
+  "metrics_total": 38
+}

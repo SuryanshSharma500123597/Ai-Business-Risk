@@ -1,0 +1,256 @@
+{
+  "causality_note": "model explanations only, never causal claims",
+  "dataset_id": "financial-statements",
+  "explainer_kinds": [
+    "shap_exact"
+  ],
+  "explainer_metadata": {
+    "additivity_note": "efficiency (base_value + sum(values) == decision_function(x)) is verified per row at tolerance 1e-6; exact additivity does not imply exact attribution (documented seed-to-seed drift ~2.2e-4, docs/05_ml_engine/phase-report.md section 11)",
+    "attribution_method": "shap.Explainer(decision_function, Independent masker, seed=42); the concrete estimator is recorded in explainer_runtime_class (a seeded Monte-Carlo permutation-family Shapley estimator); global NumPy RNG pinned and restored around every call",
+    "background": "first up-to-50 complete rows in file order (Independent masker, max_samples=50); background composition follows the source CSV row order",
+    "causality_note": "model explanations only, never causal claims",
+    "dataset_id": "financial-statements",
+    "explainer_runtime_class": "shap.explainers._permutation.PermutationExplainer",
+    "fallback": "deterministic permutation importance (backend.ml_engine.explain._permutation_row) when SHAP fails or the per-row additivity check does not hold",
+    "frozen_explainer_label": "shap_exact",
+    "label_note": "'shap_exact' is the frozen Phase 5 internal label and a known misnomer (deferred D-1; docs/development-log.md; docs/05_ml_engine/phase-report.md section 11.5). The runtime class above is authoritative; no TreeExplainer/TreeSHAP is used.",
+    "sampling": "100 evenly spaced rows of 160 complete rows (ATTRIBUTION_SAMPLE=100)"
+  },
+  "global_importance": {
+    "Cash Flow from Financial Activities": 0.008329,
+    "Cash Flow from Investing": 0.004007,
+    "Cash Flow from Operating": 0.004719,
+    "Current Ratio": 0.006149,
+    "Debt/Equity Ratio": 0.003326,
+    "EBITDA": 0.009337,
+    "Earning Per Share": 0.002952,
+    "Free Cash Flow per Share": 0.003118,
+    "Gross Profit": 0.006666,
+    "Inflation Rate(in US)": 0.005196,
+    "Market Cap(in B USD)": 0.011026,
+    "Net Income": 0.009808,
+    "Net Profit Margin": 0.00351,
+    "Number of Employees": 0.003788,
+    "ROA": 0.003334,
+    "ROE": 0.002766,
+    "ROI": 0.002718,
+    "Return on Tangible Equity": 0.002526,
+    "Revenue": 0.007559,
+    "Share Holder Equity": 0.004831
+  },
+  "global_ranking": [
+    "Market Cap(in B USD)",
+    "Net Income",
+    "EBITDA",
+    "Cash Flow from Financial Activities",
+    "Revenue",
+    "Gross Profit",
+    "Current Ratio",
+    "Inflation Rate(in US)",
+    "Share Holder Equity",
+    "Cash Flow from Operating",
+    "Cash Flow from Investing",
+    "Number of Employees",
+    "Net Profit Margin",
+    "ROA",
+    "Debt/Equity Ratio",
+    "Free Cash Flow per Share",
+    "Earning Per Share",
+    "ROE",
+    "ROI",
+    "Return on Tangible Equity"
+  ],
+  "representative_flagged_examples": [
+    {
+      "company": "AAPL",
+      "drivers": [
+        {
+          "attribution": -0.032755,
+          "direction": "pushes_anomalous",
+          "feature": "Net Income",
+          "feature_value": 99803.0
+        },
+        {
+          "attribution": -0.02821,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Financial Activities",
+          "feature_value": -110749.0
+        },
+        {
+          "attribution": -0.027268,
+          "direction": "pushes_anomalous",
+          "feature": "Revenue",
+          "feature_value": 394328.0
+        },
+        {
+          "attribution": -0.026308,
+          "direction": "pushes_anomalous",
+          "feature": "EBITDA",
+          "feature_value": 130541.0
+        },
+        {
+          "attribution": -0.022459,
+          "direction": "pushes_anomalous",
+          "feature": "Market Cap(in B USD)",
+          "feature_value": 2066.94
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 0,
+      "year": 2022
+    },
+    {
+      "company": "AAPL",
+      "drivers": [
+        {
+          "attribution": -0.038346,
+          "direction": "pushes_anomalous",
+          "feature": "Market Cap(in B USD)",
+          "feature_value": 2913.28
+        },
+        {
+          "attribution": -0.031695,
+          "direction": "pushes_anomalous",
+          "feature": "Net Income",
+          "feature_value": 94680.0
+        },
+        {
+          "attribution": -0.026059,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Financial Activities",
+          "feature_value": -93353.0
+        },
+        {
+          "attribution": -0.021549,
+          "direction": "pushes_anomalous",
+          "feature": "Revenue",
+          "feature_value": 365817.0
+        },
+        {
+          "attribution": -0.018192,
+          "direction": "pushes_anomalous",
+          "feature": "EBITDA",
+          "feature_value": 120233.0
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 1,
+      "year": 2021
+    },
+    {
+      "company": "AAPL",
+      "drivers": [
+        {
+          "attribution": -0.029623,
+          "direction": "pushes_anomalous",
+          "feature": "Market Cap(in B USD)",
+          "feature_value": 2255.97
+        },
+        {
+          "attribution": -0.022898,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Financial Activities",
+          "feature_value": -86820.0
+        },
+        {
+          "attribution": -0.01332,
+          "direction": "pushes_anomalous",
+          "feature": "Revenue",
+          "feature_value": 274515.0
+        },
+        {
+          "attribution": -0.01041,
+          "direction": "pushes_anomalous",
+          "feature": "ROE",
+          "feature_value": 87.8664
+        },
+        {
+          "attribution": -0.010205,
+          "direction": "pushes_anomalous",
+          "feature": "Net Income",
+          "feature_value": 57411.0
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 2,
+      "year": 2020
+    },
+    {
+      "company": "AAPL",
+      "drivers": [
+        {
+          "attribution": -0.030624,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Financial Activities",
+          "feature_value": -90976.0
+        },
+        {
+          "attribution": -0.02306,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Investing",
+          "feature_value": 45896.0
+        },
+        {
+          "attribution": -0.013286,
+          "direction": "pushes_anomalous",
+          "feature": "Revenue",
+          "feature_value": 260174.0
+        },
+        {
+          "attribution": -0.010353,
+          "direction": "pushes_anomalous",
+          "feature": "EBITDA",
+          "feature_value": 76477.0
+        },
+        {
+          "attribution": -0.010178,
+          "direction": "pushes_anomalous",
+          "feature": "Market Cap(in B USD)",
+          "feature_value": 1304.76
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 3,
+      "year": 2019
+    },
+    {
+      "company": "AAPL",
+      "drivers": [
+        {
+          "attribution": -0.027869,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Financial Activities",
+          "feature_value": -87876.0
+        },
+        {
+          "attribution": -0.012935,
+          "direction": "pushes_anomalous",
+          "feature": "Revenue",
+          "feature_value": 265595.0
+        },
+        {
+          "attribution": -0.011276,
+          "direction": "pushes_anomalous",
+          "feature": "Net Income",
+          "feature_value": 59531.0
+        },
+        {
+          "attribution": -0.010511,
+          "direction": "pushes_anomalous",
+          "feature": "Cash Flow from Investing",
+          "feature_value": 16066.0
+        },
+        {
+          "attribution": -0.010392,
+          "direction": "pushes_anomalous",
+          "feature": "EBITDA",
+          "feature_value": 81801.0
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 4,
+      "year": 2018
+    }
+  ],
+  "sample_rows": 100
+}

@@ -1,0 +1,57 @@
+{
+  "bankruptcy": {
+    "evaluation_available": false,
+    "evaluation_reason": "Bankruptcy.csv is the unlabeled competition test feature matrix (byte-identical to lupitaastari/bankruptcy 'bankruptcy_Test_X.csv'). Its companion labeled train file covers a different row set (55/5000 content-identical rows), so no genuine labels exist for these 5000 rows. PR-AUC/ROC-AUC/precision/recall/F1 would require fabricated labels and are therefore not computed.",
+    "features": 64,
+    "flagged": 834,
+    "raw_sha256": "4d3c07357112cd3839d3c813363743777be032f2899604ba01219a9936eeba64",
+    "rows": 5000
+  },
+  "cross_dataset": {
+    "consistency_answer": "the frozen Isolation Forest + rule baseline pipeline executes deterministically on both datasets; outcome evaluation is impossible without labels, so no generalization claim beyond pipeline portability is supported",
+    "datasets_compared": [
+      "bankruptcy",
+      "financial-statements"
+    ],
+    "dimension_notes": "bankruptcy Attr columns are anonymized ratios with no balance-sheet semantics, so no Risk Engine metric is computable; financial-statements supports a partial subset (see risk_mapping.json)",
+    "label_gated_metrics": "unavailable for both datasets (documented in evaluation.json per dataset)",
+    "merging": "none: datasets evaluated independently"
+  },
+  "external_eval_version": "1.0.0",
+  "financial_statements": {
+    "companies": 12,
+    "evaluation_available": false,
+    "features": 20,
+    "flagged": 27,
+    "raw_sha256": "32e38512643a626340b43a4255bf79d45a7afc66ffe9058326507cc2885cb1b5",
+    "rows": 161
+  },
+  "random_seed": 42,
+  "run_config": {
+    "anomaly_model": {
+      "contamination": "auto",
+      "method": "IsolationForest (frozen Phase 5 contract)",
+      "n_estimators": 200,
+      "random_state": 42,
+      "scaling": "robust median/IQR inside fit_isolation_forest"
+    },
+    "attribution_sample": 100,
+    "external_eval_version": "1.0.0",
+    "packages": {
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1"
+    },
+    "python": "3.12.10",
+    "random_seed": 42,
+    "rule_baseline": {
+      "iqr_multiplier": 1.5,
+      "method": "rolling z-score / IQR (frozen parameters)",
+      "min_periods": 8,
+      "window": 12,
+      "z_threshold": 3.0
+    },
+    "top_examples": 5
+  }
+}

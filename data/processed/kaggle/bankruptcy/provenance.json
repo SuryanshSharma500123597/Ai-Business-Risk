@@ -1,0 +1,62 @@
+{
+  "bytes": 6212713,
+  "columns": 65,
+  "configuration": {
+    "anomaly_model": {
+      "contamination": "auto",
+      "method": "IsolationForest (frozen Phase 5 contract)",
+      "n_estimators": 200,
+      "random_state": 42,
+      "scaling": "robust median/IQR inside fit_isolation_forest"
+    },
+    "attribution_sample": 100,
+    "external_eval_version": "1.0.0",
+    "packages": {
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1"
+    },
+    "python": "3.12.10",
+    "random_seed": 42,
+    "rule_baseline": {
+      "iqr_multiplier": 1.5,
+      "method": "rolling z-score / IQR (frozen parameters)",
+      "min_periods": 8,
+      "window": 12,
+      "z_threshold": 3.0
+    },
+    "top_examples": 5
+  },
+  "dataset_id": "bankruptcy",
+  "environment": {
+    "packages": {
+      "joblib": "1.6.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "pydantic": "2.13.5",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "shap": "0.52.0"
+    },
+    "platform": "Windows",
+    "python": "3.12.10"
+  },
+  "file_name": "Bankruptcy.csv",
+  "recorded_at_utc": "2026-10-11T10:37:09.664503+00:00",
+  "rows": 5000,
+  "seeds": {
+    "attribution": 42,
+    "model": 42
+  },
+  "sha256": "4d3c07357112cd3839d3c813363743777be032f2899604ba01219a9936eeba64",
+  "source": {
+    "kaggle_ref": "lupitaastari/bankruptcy",
+    "license": "competition/dataset terms (unverified - see report)",
+    "license_verified": false,
+    "name": "lupitaastari/bankruptcy (bankruptcy_Test_X.csv)",
+    "url": "https://www.kaggle.com/datasets/lupitaastari/bankruptcy",
+    "verification": "row-content equality of all 5,000 data rows with bankruptcy_Test_X.csv; headers differ (ID vs X1 header alias)"
+  }
+}

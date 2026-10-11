@@ -1,0 +1,87 @@
+{
+  "available": true,
+  "cross_boundary_guarantee": "the frozen function is called on each group's own sub-frame, so no window can span two groups and no future observation enters a window",
+  "dataset_id": "financial-statements",
+  "flag_rate": 0.9375,
+  "flag_rate_denominator": "scorable rows only",
+  "flagged_count": 60,
+  "frozen_function_called": true,
+  "grouping": "one independent series per group; sorted by (group, year ascending)",
+  "interpretation_note": "flag rates are baseline breach rates, not verified anomaly prevalence",
+  "method": "rolling z-score / IQR rule baseline (frozen parameters, per-group)",
+  "n_groups": 12,
+  "n_observations": 160,
+  "n_scorable": 64,
+  "n_unscorable": 96,
+  "parameters": {
+    "iqr_multiplier": 1.5,
+    "min_periods": 8,
+    "window": 12,
+    "z_threshold": 3.0
+  },
+  "per_group": {
+    "AAPL": {
+      "n_flagged": 6,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "AIG": {
+      "n_flagged": 4,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "AMZN": {
+      "n_flagged": 6,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "BCS": {
+      "n_flagged": 5,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "GOOG": {
+      "n_flagged": 6,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "INTC": {
+      "n_flagged": 5,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "MCD": {
+      "n_flagged": 6,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "MSFT": {
+      "n_flagged": 7,
+      "n_rows": 15,
+      "n_scorable": 7
+    },
+    "NVDA": {
+      "n_flagged": 7,
+      "n_rows": 15,
+      "n_scorable": 7
+    },
+    "PCG": {
+      "n_flagged": 6,
+      "n_rows": 14,
+      "n_scorable": 6
+    },
+    "PYPL": {
+      "n_flagged": 0,
+      "n_rows": 8,
+      "n_scorable": 0
+    },
+    "SHLDQ": {
+      "n_flagged": 2,
+      "n_rows": 10,
+      "n_scorable": 2
+    }
+  },
+  "reason": "applied per group (company) in chronological order with the frozen parameters; windows are trailing-row only within a group",
+  "unscorable_reason": "fewer than min_periods=8 prior observations within the same group",
+  "window_semantics_note": "frozen window=12/min_periods=8 are period counts: 12 annual periods here versus 12 monthly periods in the synthetic environment (parameters unchanged, not retuned)"
+}

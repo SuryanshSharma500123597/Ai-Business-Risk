@@ -1,0 +1,16 @@
+{
+  "available": false,
+  "dataset_id": "bankruptcy",
+  "flag_rate": null,
+  "flagged_count": null,
+  "frozen_function_called": false,
+  "method": "rolling z-score / IQR rule baseline (frozen parameters)",
+  "n_scorable": 0,
+  "parameters": {
+    "iqr_multiplier": 1.5,
+    "min_periods": 8,
+    "window": 12,
+    "z_threshold": 3.0
+  },
+  "reason": "The frozen rolling z-score/IQR rule baseline computes trailing windows over row order and is only valid for an ordered temporal series. This dataset is cross-sectional (no time column; row order is an identifier order), so every trailing-window statistic would be meaningless. The baseline is therefore recorded as unavailable rather than reported with an invalid flag rate."
+}

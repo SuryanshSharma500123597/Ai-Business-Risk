@@ -1,0 +1,334 @@
+{
+  "causality_note": "model explanations only, never causal claims",
+  "dataset_id": "bankruptcy",
+  "explainer_kinds": [
+    "shap_exact"
+  ],
+  "explainer_metadata": {
+    "additivity_note": "efficiency (base_value + sum(values) == decision_function(x)) is verified per row at tolerance 1e-6; exact additivity does not imply exact attribution (documented seed-to-seed drift ~2.2e-4, docs/05_ml_engine/phase-report.md section 11)",
+    "attribution_method": "shap.Explainer(decision_function, Independent masker, seed=42); the concrete estimator is recorded in explainer_runtime_class (a seeded Monte-Carlo permutation-family Shapley estimator); global NumPy RNG pinned and restored around every call",
+    "background": "first up-to-50 complete rows in file order (Independent masker, max_samples=50); background composition follows the source CSV row order",
+    "causality_note": "model explanations only, never causal claims",
+    "dataset_id": "bankruptcy",
+    "explainer_runtime_class": "shap.explainers._permutation.PermutationExplainer",
+    "fallback": "deterministic permutation importance (backend.ml_engine.explain._permutation_row) when SHAP fails or the per-row additivity check does not hold",
+    "frozen_explainer_label": "shap_exact",
+    "label_note": "'shap_exact' is the frozen Phase 5 internal label and a known misnomer (deferred D-1; docs/development-log.md; docs/05_ml_engine/phase-report.md section 11.5). The runtime class above is authoritative; no TreeExplainer/TreeSHAP is used.",
+    "sampling": "100 evenly spaced rows of 5000 complete rows (ATTRIBUTION_SAMPLE=100)"
+  },
+  "global_importance": {
+    "Attr1": 0.001529,
+    "Attr10": 0.000618,
+    "Attr11": 0.001385,
+    "Attr12": 0.000746,
+    "Attr13": 0.000757,
+    "Attr14": 0.001001,
+    "Attr15": 0.000296,
+    "Attr16": 0.000857,
+    "Attr17": 0.000912,
+    "Attr18": 0.001425,
+    "Attr19": 0.001203,
+    "Attr2": 0.000467,
+    "Attr20": 0.000734,
+    "Attr21": 0.00093,
+    "Attr22": 0.001353,
+    "Attr23": 0.000702,
+    "Attr24": 0.000871,
+    "Attr25": 0.000366,
+    "Attr26": 0.001105,
+    "Attr27": 0.000727,
+    "Attr28": 0.000874,
+    "Attr29": 0.00091,
+    "Attr3": 0.001123,
+    "Attr30": 0.000922,
+    "Attr31": 0.000803,
+    "Attr32": 0.000587,
+    "Attr33": 0.000914,
+    "Attr34": 0.001315,
+    "Attr35": 0.001012,
+    "Attr36": 0.001205,
+    "Attr37": 0.000584,
+    "Attr38": 0.000909,
+    "Attr39": 0.001275,
+    "Attr4": 0.000823,
+    "Attr40": 0.000467,
+    "Attr41": 0.000349,
+    "Attr42": 0.00109,
+    "Attr43": 0.000724,
+    "Attr44": 0.000818,
+    "Attr45": 0.000425,
+    "Attr46": 0.001016,
+    "Attr47": 0.000759,
+    "Attr48": 0.001359,
+    "Attr49": 0.000989,
+    "Attr5": 0.000812,
+    "Attr50": 0.00159,
+    "Attr51": 0.000764,
+    "Attr52": 0.001208,
+    "Attr53": 0.00073,
+    "Attr54": 0.000923,
+    "Attr55": 0.000682,
+    "Attr56": 0.001144,
+    "Attr57": 0.000555,
+    "Attr58": 0.001137,
+    "Attr59": 0.000612,
+    "Attr6": 0.000896,
+    "Attr60": 0.000437,
+    "Attr61": 0.00067,
+    "Attr62": 0.000617,
+    "Attr63": 0.001143,
+    "Attr64": 0.000781,
+    "Attr7": 0.001107,
+    "Attr8": 0.001524,
+    "Attr9": 0.001133
+  },
+  "global_ranking": [
+    "Attr50",
+    "Attr1",
+    "Attr8",
+    "Attr18",
+    "Attr11",
+    "Attr48",
+    "Attr22",
+    "Attr34",
+    "Attr39",
+    "Attr52",
+    "Attr36",
+    "Attr19",
+    "Attr56",
+    "Attr63",
+    "Attr58",
+    "Attr9",
+    "Attr3",
+    "Attr7",
+    "Attr26",
+    "Attr42",
+    "Attr46",
+    "Attr35",
+    "Attr14",
+    "Attr49",
+    "Attr21",
+    "Attr54",
+    "Attr30",
+    "Attr33",
+    "Attr17",
+    "Attr29",
+    "Attr38",
+    "Attr6",
+    "Attr28",
+    "Attr24",
+    "Attr16",
+    "Attr4",
+    "Attr44",
+    "Attr5",
+    "Attr31",
+    "Attr64",
+    "Attr51",
+    "Attr47",
+    "Attr13",
+    "Attr12",
+    "Attr20",
+    "Attr53",
+    "Attr27",
+    "Attr43",
+    "Attr23",
+    "Attr55",
+    "Attr61",
+    "Attr10",
+    "Attr62",
+    "Attr59",
+    "Attr32",
+    "Attr37",
+    "Attr57",
+    "Attr40",
+    "Attr2",
+    "Attr60",
+    "Attr45",
+    "Attr25",
+    "Attr41",
+    "Attr15"
+  ],
+  "representative_flagged_examples": [
+    {
+      "drivers": [
+        {
+          "attribution": -0.012511,
+          "direction": "pushes_anomalous",
+          "feature": "Attr20",
+          "feature_value": 0.326757504122493
+        },
+        {
+          "attribution": -0.011853,
+          "direction": "pushes_anomalous",
+          "feature": "Attr43",
+          "feature_value": 0.0462300490218018
+        },
+        {
+          "attribution": -0.005665,
+          "direction": "pushes_anomalous",
+          "feature": "Attr47",
+          "feature_value": 0.08297678759946
+        },
+        {
+          "attribution": -0.003867,
+          "direction": "pushes_anomalous",
+          "feature": "Attr18",
+          "feature_value": -0.0412579115183836
+        },
+        {
+          "attribution": -0.003724,
+          "direction": "pushes_anomalous",
+          "feature": "Attr56",
+          "feature_value": 0.0072584869076716
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 2
+    },
+    {
+      "drivers": [
+        {
+          "attribution": -0.009389,
+          "direction": "pushes_anomalous",
+          "feature": "Attr11",
+          "feature_value": -1.8623038340423
+        },
+        {
+          "attribution": -0.008595,
+          "direction": "pushes_anomalous",
+          "feature": "Attr18",
+          "feature_value": -0.0898220377534346
+        },
+        {
+          "attribution": -0.00735,
+          "direction": "pushes_anomalous",
+          "feature": "Attr56",
+          "feature_value": 0.0057146205503714
+        },
+        {
+          "attribution": -0.006921,
+          "direction": "pushes_anomalous",
+          "feature": "Attr22",
+          "feature_value": -1.87128174342176
+        },
+        {
+          "attribution": -0.006358,
+          "direction": "pushes_anomalous",
+          "feature": "Attr42",
+          "feature_value": -0.161540012086578
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 10
+    },
+    {
+      "drivers": [
+        {
+          "attribution": -0.011354,
+          "direction": "pushes_anomalous",
+          "feature": "Attr23",
+          "feature_value": -0.394399441691375
+        },
+        {
+          "attribution": -0.011065,
+          "direction": "pushes_anomalous",
+          "feature": "Attr31",
+          "feature_value": -0.406648988244944
+        },
+        {
+          "attribution": -0.009926,
+          "direction": "pushes_anomalous",
+          "feature": "Attr11",
+          "feature_value": -1.79532441563705
+        },
+        {
+          "attribution": -0.008401,
+          "direction": "pushes_anomalous",
+          "feature": "Attr19",
+          "feature_value": -0.378692927709741
+        },
+        {
+          "attribution": -0.007597,
+          "direction": "pushes_anomalous",
+          "feature": "Attr18",
+          "feature_value": -0.0862656824915315
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 18
+    },
+    {
+      "drivers": [
+        {
+          "attribution": -0.011524,
+          "direction": "pushes_anomalous",
+          "feature": "Attr50",
+          "feature_value": 2.7061031494263
+        },
+        {
+          "attribution": -0.010409,
+          "direction": "pushes_anomalous",
+          "feature": "Attr19",
+          "feature_value": 0.179001147142107
+        },
+        {
+          "attribution": -0.007618,
+          "direction": "pushes_anomalous",
+          "feature": "Attr42",
+          "feature_value": 0.18794418775884
+        },
+        {
+          "attribution": -0.007553,
+          "direction": "pushes_anomalous",
+          "feature": "Attr39",
+          "feature_value": 0.240477627535849
+        },
+        {
+          "attribution": -0.005783,
+          "direction": "pushes_anomalous",
+          "feature": "Attr40",
+          "feature_value": 0.872080178345865
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 38
+    },
+    {
+      "drivers": [
+        {
+          "attribution": -0.018972,
+          "direction": "pushes_anomalous",
+          "feature": "Attr48",
+          "feature_value": -3.19966061580423
+        },
+        {
+          "attribution": -0.016083,
+          "direction": "pushes_anomalous",
+          "feature": "Attr22",
+          "feature_value": -4.05347157609946
+        },
+        {
+          "attribution": -0.015788,
+          "direction": "pushes_anomalous",
+          "feature": "Attr11",
+          "feature_value": -6.08276602384154
+        },
+        {
+          "attribution": -0.015722,
+          "direction": "pushes_anomalous",
+          "feature": "Attr31",
+          "feature_value": -1.52456927862339
+        },
+        {
+          "attribution": -0.015575,
+          "direction": "pushes_anomalous",
+          "feature": "Attr56",
+          "feature_value": -0.0131721948502589
+        }
+      ],
+      "explainer": "shap_exact",
+      "row_position": 55
+    }
+  ],
+  "sample_rows": 100
+}

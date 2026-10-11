@@ -1,0 +1,50 @@
+{
+  "all_company_histories_consecutive": true,
+  "categories": [
+    "BANK",
+    "Bank",
+    "ELEC",
+    "FOOD",
+    "FinTech",
+    "Finance",
+    "IT",
+    "LOGI",
+    "Manufacturing"
+  ],
+  "companies": 12,
+  "companies_with_at_least_12_periods": 10,
+  "frequency": "annual",
+  "max_obs_per_company": 15,
+  "min_obs_per_company": 9,
+  "observations_per_company": {
+    "AAPL": 14,
+    "AIG": 14,
+    "AMZN": 14,
+    "BCS": 14,
+    "GOOG": 14,
+    "INTC": 14,
+    "MCD": 14,
+    "MSFT": 15,
+    "NVDA": 15,
+    "PCG": 14,
+    "PYPL": 9,
+    "SHLDQ": 10
+  },
+  "years": [
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ]
+}

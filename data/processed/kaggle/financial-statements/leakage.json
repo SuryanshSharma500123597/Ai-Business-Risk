@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "detail": "no target column present in feature matrix",
+      "name": "target_not_in_features",
+      "passed": true
+    },
+    {
+      "detail": "identifiers/time/metadata excluded from features",
+      "name": "identifiers_and_metadata_not_in_features",
+      "passed": true
+    },
+    {
+      "detail": "preprocessing parameters are computed from feature data only",
+      "name": "preprocessing_independent_of_target",
+      "passed": true
+    },
+    {
+      "detail": "not applicable: no supervised train/evaluation split exists",
+      "name": "no_duplicate_entities_across_splits",
+      "passed": true
+    },
+    {
+      "detail": "not applicable: no temporal supervised features are constructed",
+      "name": "no_future_information_in_historical_features",
+      "passed": true
+    }
+  ],
+  "clean": true,
+  "dataset_id": "financial-statements"
+}

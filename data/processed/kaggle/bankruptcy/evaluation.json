@@ -1,0 +1,7 @@
+{
+  "available": false,
+  "dataset_id": "bankruptcy",
+  "detail": {},
+  "metrics": {},
+  "reason": "Bankruptcy.csv is the unlabeled competition test feature matrix (byte-identical to lupitaastari/bankruptcy 'bankruptcy_Test_X.csv'). Its companion labeled train file covers a different row set (55/5000 content-identical rows), so no genuine labels exist for these 5000 rows. PR-AUC/ROC-AUC/precision/recall/F1 would require fabricated labels and are therefore not computed."
+}

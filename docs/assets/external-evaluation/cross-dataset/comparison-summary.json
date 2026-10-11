@@ -1,0 +1,10 @@
+{
+  "consistency_answer": "the frozen Isolation Forest + rule baseline pipeline executes deterministically on both datasets; outcome evaluation is impossible without labels, so no generalization claim beyond pipeline portability is supported",
+  "datasets_compared": [
+    "bankruptcy",
+    "financial-statements"
+  ],
+  "dimension_notes": "bankruptcy Attr columns are anonymized ratios with no balance-sheet semantics, so no Risk Engine metric is computable; financial-statements supports a partial subset (see risk_mapping.json)",
+  "label_gated_metrics": "unavailable for both datasets (documented in evaluation.json per dataset)",
+  "merging": "none: datasets evaluated independently"
+}

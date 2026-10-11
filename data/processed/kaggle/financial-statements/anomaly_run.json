@@ -1,0 +1,47 @@
+{
+  "dataset_fingerprint": "31f94d77bfb4e8d657afac962aaa6c22be3938ab1562a53740105e5e45cfed8e",
+  "dataset_id": "financial-statements",
+  "feature_names": [
+    "Market Cap(in B USD)",
+    "Revenue",
+    "Gross Profit",
+    "Net Income",
+    "Earning Per Share",
+    "EBITDA",
+    "Share Holder Equity",
+    "Cash Flow from Operating",
+    "Cash Flow from Investing",
+    "Cash Flow from Financial Activities",
+    "Current Ratio",
+    "Debt/Equity Ratio",
+    "ROE",
+    "ROA",
+    "ROI",
+    "Net Profit Margin",
+    "Free Cash Flow per Share",
+    "Return on Tangible Equity",
+    "Number of Employees",
+    "Inflation Rate(in US)"
+  ],
+  "flagged_count": 27,
+  "model": "IsolationForest (frozen Phase 5 configuration)",
+  "n_features": 20,
+  "n_observations": 160,
+  "parameters": {
+    "bootstrap": false,
+    "max_features": 1.0,
+    "max_samples": "auto",
+    "n_estimators": 200,
+    "random_state": 42
+  },
+  "score_summary": {
+    "flag_rate": 0.16875,
+    "max": 1.0,
+    "mean": 0.503125,
+    "median": 0.503125,
+    "min": 0.00625,
+    "p90": 0.900625
+  },
+  "threshold": -0.0451328817060862,
+  "threshold_policy": "train quantile at expected rate 0.166667 (same policy form as frozen Phase 5 golden)"
+}
