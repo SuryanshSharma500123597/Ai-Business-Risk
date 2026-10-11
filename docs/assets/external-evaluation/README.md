@@ -1,9 +1,16 @@
 # External Evaluation Figures
 
-All PNGs here are generated deterministically (DPI 200, Agg backend) by
-`python -m backend.external_data.run_experiment`. No fabricated curves: label-gated
+All PNGs here are generated deterministically (DPI 200, Agg backend). The `bankruptcy/`,
+`financial-statements/` and cross-dataset comparison charts come from
+`python -m backend.external_data.run_experiment`; `cross-dataset/threshold-sensitivity.png` and
+`cross-dataset/seed-rank-stability.png` come from `python -m backend.external_data.stability`.
+No fabricated curves: label-gated
 slots (PR/ROC/confusion/class-distribution/model-comparison) are honest "unavailable"
 notices explaining that no genuine labels exist.
+
+**No UCI figures exist.** The UCI supervised benchmark
+([report](../../external-evaluation/uci-bankruptcy-benchmark-report.md)) is tabular evidence only:
+report tables plus `data/processed/uci-bankruptcy/benchmark_results.json`.
 
 ## bankruptcy/ (8)
 
@@ -35,4 +42,12 @@ notices explaining that no genuine labels exist.
 - `comparison-summary.json` — independent-evaluation comparison record (no merging)
 - `model-performance-comparison.csv` — observation/feature/flag counts per dataset
 
-Related: research report at `docs/external-evaluation/external-financial-dataset-evaluation.md`.
+## Related reports
+
+- [External financial dataset evaluation](../../external-evaluation/external-financial-dataset-evaluation.md)
+- [Anomaly stability & threshold sensitivity analysis](../../external-evaluation/anomaly-stability-analysis.md) — source of the two stability figures above
+- [UCI bankruptcy benchmark plan](../../external-evaluation/uci-bankruptcy-benchmark-plan.md)
+- [UCI bankruptcy benchmark report](../../external-evaluation/uci-bankruptcy-benchmark-report.md)
+- [Dataset provenance & licensing audit](../../external-evaluation/dataset-provenance-and-licensing.md)
+- [Ground-truth feasibility](../../external-evaluation/ground-truth-feasibility.md)
+- [Digital Twin & stress validation report](../../external-evaluation/digital-twin-stress-validation-report.md)

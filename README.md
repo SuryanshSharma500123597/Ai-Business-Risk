@@ -16,7 +16,7 @@
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00)
 ![PostgreSQL / SQLite](https://img.shields.io/badge/PostgreSQL%2016%20%2F%20SQLite-tests-4169E1?logo=postgresql&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-foundation%20only-009688?logo=fastapi&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-388%20tests-0A9EDC?logo=pytest&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-544%20tests-0A9EDC?logo=pytest&logoColor=white)
 ![Ruff](https://img.shields.io/badge/Ruff-clean-261230?logo=ruff&logoColor=white)
 ![Mypy](https://img.shields.io/badge/Mypy-clean-2A6DB2)
 ![Jupyter](https://img.shields.io/badge/Jupyter-notebooks-F37626?logo=jupyter&logoColor=white)
@@ -25,7 +25,7 @@
 
 </div>
 
-> **About the badges:** they are static and describe the locally verified Phase 6 state of this
+> **About the badges:** they are static and describe the locally verified Phase 8 state of this
 > repository. **No CI service is configured yet** (Phase 12), so there is deliberately no build or
 > coverage-service badge. `FastAPI` is marked *foundation only* because Phase 2 shipped the app factory
 > and `/api/v1/health`; the rest of the API is Phase 10.
@@ -328,8 +328,10 @@ The project is organised around a small number of claims that are frozen in the 
   guardrail ablations.
 
 **Status honesty:** the points above describe the *frozen research plan and architecture*, not finished
-results. The evaluation phase that produces measured comparisons is Phase 13; nothing in this repository
-should be read as published research or a benchmark claim.
+results. The evaluation phase that produces measured comparisons of the guarded multi-agent system is
+Phase 13. The committed external-evaluation research ([next section](#external-evaluation--research-evidence))
+does report measured benchmark and robustness results, each with its own stated caveats — it is research
+evidence, not a product claim, and not the Phase 13 evaluation.
 
 ### Recorded specification interpretations (approved at Phase 4 closure)
 
@@ -342,6 +344,103 @@ separately approved work item:
 - **Q-M2 — VaR / ES interpretation:** both `var_95` and `es_95` use the **company/equity** return leg, FX
   returns are isolated to FX volatility, and benchmark returns are used for **beta only**.
 - **Q-C1 — inflation pass-through sign:** the margin/inflation gap is **signed**, `Δgross_margin − ΔCPI`.
+
+## External Evaluation & Research Evidence
+
+The external-evaluation program is a **separate research workstream**: five committed studies
+(ground-truth feasibility, threshold/seed stability, provenance audit, Digital Twin validation and the
+UCI supervised benchmark) that assess the platform's *methods* against external data. They change no
+frozen contract, add no model to the product, and are **not wired into any engine, API or agent**. Each
+study's own report is the authority for its numbers and caveats.
+
+### Model and architecture status
+
+| Component | Status |
+|---|---|
+| Isolation Forest (`backend/ml_engine/`) | **Implemented** — the core ML anomaly detector (Phase 5) |
+| Rolling z-score/IQR rule baseline | **Implemented** — existing deterministic baseline (Phase 5) |
+| DummyClassifier, Logistic Regression, Random Forest, HistGradientBoosting | **Benchmark-only** — evaluated solely in the UCI supervised study; **not** integrated into the anomaly engine |
+| Explainability | Permutation-family Shapley estimator (`shap.Explainer` → `PermutationExplainer`) — descriptive attribution of the model, **not causal** |
+| LangGraph multi-agent orchestration (Phase 9) | **Planned, not implemented** |
+| FastAPI | App factory + `/api/v1/health` scaffolding only — no complete production API and no live frontend integration |
+
+### A. Core anomaly detection on external datasets
+
+- **Isolation Forest** is the implemented core ML anomaly detector; the **rolling z-score/IQR rule** is
+  the existing deterministic baseline. Both are frozen Phase 5 code, unmodified by this research.
+- The two external Kaggle datasets carry **no ground-truth labels**, so no precision, recall, F1 or AUC
+  can be computed for them. The measurable questions are robustness ones, answered in the
+  [stability analysis](docs/external-evaluation/anomaly-stability-analysis.md): global ranking is stable
+  across seeds (Spearman ρ ≈ 0.96–0.99) while exact top-k membership churns, and the flagged count is
+  fixed by construction (train-quantile threshold).
+- **The flagged fraction is an operating threshold** — an alert-budget choice — **not** verified
+  real-world anomaly prevalence. A higher flag rate never means "better detection."
+
+### B. External supervised benchmark — UCI Taiwanese Bankruptcy Prediction
+
+The only **labeled** external evaluation is a separate supervised benchmark on the UCI Taiwanese
+Bankruptcy Prediction dataset. Values below match the committed
+[report](docs/external-evaluation/uci-bankruptcy-benchmark-report.md) and
+[`benchmark_results.json`](data/processed/uci-bankruptcy/benchmark_results.json):
+
+| Model | Average precision | ROC-AUC |
+|---|---:|---:|
+| DummyClassifier | 0.0320 | 0.4939 |
+| Logistic Regression | 0.3190 | 0.9171 |
+| Random Forest | 0.4955 | 0.9528 |
+| HistGradientBoosting | 0.5238 | 0.9540 |
+
+- This is a **separate supervised benchmark**. It does **not** mean these models are integrated into the
+  core production anomaly engine — they exist only in the benchmark code path.
+- The evaluation uses a **fixed-seed (42) random stratified 80/20 held-out split** — *not* temporal
+  validation and with no demonstrated forecast horizon (the dataset carries no dates or company IDs).
+- These results **do not** prove production performance or generalization to every business dataset.
+- Plan: [uci-bankruptcy-benchmark-plan.md](docs/external-evaluation/uci-bankruptcy-benchmark-plan.md) ·
+  Report: [uci-bankruptcy-benchmark-report.md](docs/external-evaluation/uci-bankruptcy-benchmark-report.md).
+
+### C. Digital Twin and stress-testing validation
+
+The independent
+[Digital Twin & stress-validation report](docs/external-evaluation/digital-twin-stress-validation-report.md)
+audits the frozen Phase 6–8 engines on two axes the authors explicitly separate from reality: does the
+code implement its documented contract, and do outputs satisfy accounting/financial coherence under the
+stated assumptions. It is read-only with respect to the frozen engines (four additive tests were added).
+It does **not** establish empirical real-world validity — the twin runs on synthetic data and no
+real-world validation set is used.
+
+### D. Provenance, licensing and ground-truth feasibility
+
+- [Provenance & licensing audit](docs/external-evaluation/dataset-provenance-and-licensing.md) —
+  separates download location, original source and applicable license. Both Kaggle datasets are rated
+  **LICENSING_RESTRICTED / UNVERIFIED** and are not redistributed. An identical copy found elsewhere
+  does **not** by itself establish provenance or licensing permission; nothing in the audit is legal
+  advice.
+- [Ground-truth feasibility](docs/external-evaluation/ground-truth-feasibility.md) — research/feasibility
+  only: **no labels were obtained and no data was downloaded**. The anonymized `Attr1–Attr64` bankruptcy
+  rows cannot be relabeled or linked to recover outcomes; the report documents why.
+
+### E. Visual research results
+
+Two headline figures from the stability study (all 19 committed charts live in the
+[figure index](docs/assets/external-evaluation/README.md)):
+
+![Threshold sensitivity: flagged count across operating rates](docs/assets/external-evaluation/cross-dataset/threshold-sensitivity.png)
+
+*Threshold sensitivity (C1) — flagged count as the operating rate sweeps 0.02–0.30 on one frozen
+seed-42 ranking; the flag sets are nested by construction. See
+[stability analysis §2](docs/external-evaluation/anomaly-stability-analysis.md).*
+
+![Seed/rank stability: Spearman correlation vs. Isolation Forest seed](docs/assets/external-evaluation/cross-dataset/seed-rank-stability.png)
+
+*Seed/rank stability (C2) — Spearman rank correlation of anomaly scores against the seed-42 reference.
+See [stability analysis §3](docs/external-evaluation/anomaly-stability-analysis.md).*
+
+Full reports: [external dataset evaluation](docs/external-evaluation/external-financial-dataset-evaluation.md)
+· [stability analysis](docs/external-evaluation/anomaly-stability-analysis.md)
+· [UCI benchmark report](docs/external-evaluation/uci-bankruptcy-benchmark-report.md)
+· [figure index](docs/assets/external-evaluation/README.md)
+
+---
 
 ## Project Structure
 
@@ -504,6 +603,13 @@ touches an external endpoint.
 | [docs/development-log.md](docs/development-log.md) | Phase-by-phase development log |
 | [docs/development/project-artifact-protocol.md](docs/development/project-artifact-protocol.md) | Permanent artifact rules: regenerate-not-hand-edit, raw read-only, no fabricated results, determinism, verify-before-claiming, frozen-phase integrity |
 | [docs/external-evaluation/external-financial-dataset-evaluation.md](docs/external-evaluation/external-financial-dataset-evaluation.md) | External Kaggle dataset evaluation: audits, preprocessing, Risk Engine mapping, applicability-gated baseline, explainability, cross-dataset comparison |
+| [docs/external-evaluation/anomaly-stability-analysis.md](docs/external-evaluation/anomaly-stability-analysis.md) | Threshold sensitivity & seed/rank stability of the frozen Isolation Forest (Workstream C), with figures and rule-baseline evidence |
+| [docs/external-evaluation/uci-bankruptcy-benchmark-plan.md](docs/external-evaluation/uci-bankruptcy-benchmark-plan.md) | UCI Taiwanese Bankruptcy supervised benchmark plan (Workstream D): source audit, split protocol, model configs, acceptance criteria |
+| [docs/external-evaluation/uci-bankruptcy-benchmark-report.md](docs/external-evaluation/uci-bankruptcy-benchmark-report.md) | UCI benchmark report: measured AP/ROC-AUC for DummyClassifier, Logistic Regression, Random Forest, HistGradientBoosting + leakage checks and limitations |
+| [docs/external-evaluation/dataset-provenance-and-licensing.md](docs/external-evaluation/dataset-provenance-and-licensing.md) | Provenance & licensing audit of the external datasets (Workstream E): source verification and redistribution caveats |
+| [docs/external-evaluation/ground-truth-feasibility.md](docs/external-evaluation/ground-truth-feasibility.md) | Ground-truth recovery feasibility (Workstream A): candidate verdicts; no labels obtained, no data downloaded |
+| [docs/external-evaluation/digital-twin-stress-validation-report.md](docs/external-evaluation/digital-twin-stress-validation-report.md) | Independent Digital Twin/stress validation audit (Workstream F): implementation-correctness and financial-coherence checks (not empirical validity) |
+| [docs/assets/external-evaluation/README.md](docs/assets/external-evaluation/README.md) | Figure index for all 19 committed external-evaluation charts (bankruptcy, financial-statements, cross-dataset) |
 | [docs/02_foundation/phase-report.md](docs/02_foundation/phase-report.md) | Phase 2 completion report |
 | [docs/03_data-engineering/phase-report.md](docs/03_data-engineering/phase-report.md) | Phase 3 completion report |
 | [docs/04_quantitative-risk/phase-report.md](docs/04_quantitative-risk/phase-report.md) | Phase 4 + Stage 5 completion report |
@@ -515,10 +621,12 @@ touches an external endpoint.
   commercial product.
 - It is **not professional financial advice**, **not a regulatory-certified risk system**, **not a live
   trading or treasury system**, and **not a replacement for professional risk teams**.
-- Only Phases 0–5 exist. There is no digital twin, scenario engine, stress-testing engine, agent
-  graph, application API or frontend yet, so no end-to-end user workflow is available. The Phase 5 ML
+- **Phases 0–8 exist** — including the digital twin, scenario engine and stress-testing engine — but
+  there is no agent graph, application API or frontend yet, so no end-to-end user workflow is
+  available. The Phase 5 ML
   engine is complete but is **not** wired into any service, API or agent, and has **no production entry
-  point** — it is invoked programmatically from tests and its validation notebook.
+  point** — it is invoked programmatically from tests and its validation notebook. The external-evaluation
+  research described above is research-only as well: none of it is deployed.
 - **The ML engine does not currently beat its own baseline.** On the pinned synthetic fixture the
   rolling z-score/IQR rule baseline achieves a higher PR-AUC (0.8304) than the Isolation Forest
   (0.5250), so the retention verdict is `baseline_wins_or_tie` and the model is not retained. This is
@@ -530,10 +638,15 @@ touches an external endpoint.
   training rows pooled with the scored rows).
 - **Anomaly ≠ risk and attribution ≠ causation.** The ML engine produces no mapping onto the Phase 4
   0–100 risk score, and its SHAP drivers explain the model rather than the business cause.
-- The ML engine has been validated **only** against synthetic injected anomalies. No real audited
-  financial statements, no external benchmark, no predictive-validity claim.
+- The ML engine has been validated **only** against synthetic injected anomalies. The external-evaluation
+  research does not change that: the Kaggle datasets carry no ground-truth labels, and the UCI benchmark
+  is a separate supervised study whose models are not integrated with the engine — so there is still
+  **no predictive-validity claim** for the production anomaly path.
 - The engine is deterministic and unit-verified, but it has **not** been validated against real audited
-  financial statements or an external risk benchmark; market and macro metrics depend on caller-supplied
+  financial statements or an external risk benchmark (the committed external-evaluation research
+  validates neither — see
+  [External Evaluation & Research Evidence](#external-evaluation--research-evidence));
+  market and macro metrics depend on caller-supplied
   cached series and degrade explicitly when those are absent.
 - Merton distance-to-default remains reference-only and disabled by default (asset value and its volatility
   are unobservable in the synthetic path).
