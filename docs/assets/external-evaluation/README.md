@@ -25,11 +25,13 @@ notices explaining that no genuine labels exist.
 - `anomaly-results.png` — anomaly score by year, flagged rows marked (score-vs-year scatter)
 - `shap-summary.png` — global mean |attribution| over 100 sampled rows (Phase 5 path: permutation-family Shapley estimator; frozen label shap_exact is a known misnomer, see report section 13)
 
-## cross-dataset/ (3 PNG + 1 JSON + 1 CSV)
+## cross-dataset/ (5 PNG + 1 JSON + 1 CSV)
 
 - `risk-dimension-comparison.png` — dimension computability heatmap (bankruptcy vs. financial-statements)
 - `feature-importance-comparison.png` — top mean |attribution| features per dataset (normalized within panel)
 - `model-performance-comparison.png` — **unavailable notice** (neither dataset has labels)
+- `threshold-sensitivity.png` — frozen-IF flagged count vs. expected-rate operating point (Workstream C1)
+- `seed-rank-stability.png` — frozen-IF Spearman rank correlation vs. seed (Workstream C2)
 - `comparison-summary.json` — independent-evaluation comparison record (no merging)
 - `model-performance-comparison.csv` — observation/feature/flag counts per dataset
 

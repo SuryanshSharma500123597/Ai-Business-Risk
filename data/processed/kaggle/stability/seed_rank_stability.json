@@ -1,0 +1,180 @@
+{
+  "bankruptcy": {
+    "dataset_id": "bankruptcy",
+    "frozen_core_unchanged": "frozen fit_isolation_forest called unchanged; only IsolationForestConfig.random_state varied (documented); production default seed 42 and all hyperparameters unchanged",
+    "interpretation": "measures repeatability/stability of the ranking, NOT predictive accuracy (no ground-truth labels exist)",
+    "n_observations": 5000,
+    "per_seed": [
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 42
+        },
+        "flagged_count_at_reference_rate": 834,
+        "is_reference": true,
+        "seed": 42,
+        "spearman_vs_reference": 1.0,
+        "topk_jaccard_vs_reference": 1.0
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 43
+        },
+        "flagged_count_at_reference_rate": 834,
+        "is_reference": false,
+        "seed": 43,
+        "spearman_vs_reference": 0.965077,
+        "topk_jaccard_vs_reference": 0.84106
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 44
+        },
+        "flagged_count_at_reference_rate": 834,
+        "is_reference": false,
+        "seed": 44,
+        "spearman_vs_reference": 0.973089,
+        "topk_jaccard_vs_reference": 0.816993
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 45
+        },
+        "flagged_count_at_reference_rate": 834,
+        "is_reference": false,
+        "seed": 45,
+        "spearman_vs_reference": 0.968704,
+        "topk_jaccard_vs_reference": 0.880496
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 46
+        },
+        "flagged_count_at_reference_rate": 834,
+        "is_reference": false,
+        "seed": 46,
+        "spearman_vs_reference": 0.96744,
+        "topk_jaccard_vs_reference": 0.849224
+      }
+    ],
+    "rank_metric": "Spearman rank correlation of -decision_function over all complete rows vs reference seed 42",
+    "reference_seed": 42,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "top_k": 834,
+    "topk_metric": "Jaccard overlap of the top-834 rows by -decision_function vs reference seed 42"
+  },
+  "financial-statements": {
+    "dataset_id": "financial-statements",
+    "frozen_core_unchanged": "frozen fit_isolation_forest called unchanged; only IsolationForestConfig.random_state varied (documented); production default seed 42 and all hyperparameters unchanged",
+    "interpretation": "measures repeatability/stability of the ranking, NOT predictive accuracy (no ground-truth labels exist)",
+    "n_observations": 160,
+    "per_seed": [
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 42
+        },
+        "flagged_count_at_reference_rate": 27,
+        "is_reference": true,
+        "seed": 42,
+        "spearman_vs_reference": 1.0,
+        "topk_jaccard_vs_reference": 1.0
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 43
+        },
+        "flagged_count_at_reference_rate": 27,
+        "is_reference": false,
+        "seed": 43,
+        "spearman_vs_reference": 0.98773,
+        "topk_jaccard_vs_reference": 0.928571
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 44
+        },
+        "flagged_count_at_reference_rate": 27,
+        "is_reference": false,
+        "seed": 44,
+        "spearman_vs_reference": 0.980596,
+        "topk_jaccard_vs_reference": 0.862069
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 45
+        },
+        "flagged_count_at_reference_rate": 27,
+        "is_reference": false,
+        "seed": 45,
+        "spearman_vs_reference": 0.986851,
+        "topk_jaccard_vs_reference": 0.928571
+      },
+      {
+        "config": {
+          "bootstrap": false,
+          "max_features": 1.0,
+          "max_samples": "auto",
+          "n_estimators": 200,
+          "random_state": 46
+        },
+        "flagged_count_at_reference_rate": 27,
+        "is_reference": false,
+        "seed": 46,
+        "spearman_vs_reference": 0.986148,
+        "topk_jaccard_vs_reference": 0.862069
+      }
+    ],
+    "rank_metric": "Spearman rank correlation of -decision_function over all complete rows vs reference seed 42",
+    "reference_seed": 42,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "top_k": 27,
+    "topk_metric": "Jaccard overlap of the top-27 rows by -decision_function vs reference seed 42"
+  }
+}

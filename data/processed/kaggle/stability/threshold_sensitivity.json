@@ -1,0 +1,164 @@
+{
+  "bankruptcy": {
+    "boundary_sensitive_flagged_only_above_0_02": 1400,
+    "core_flagged_at_0_02": 100,
+    "dataset_id": "bankruptcy",
+    "label_gated_metrics": {
+      "available": false,
+      "note": "precision/recall/F1/ROC-AUC/PR-AUC require independent ground-truth labels; none exist for this dataset, so none are computed or reported"
+    },
+    "n_observations": 5000,
+    "reference": {
+      "expected_rate": 0.16666666666666666,
+      "flag_rate": 0.1668,
+      "flagged_count": 834,
+      "threshold": -0.1035405795
+    },
+    "reproduction_check": {
+      "exact_match": true,
+      "mismatched_rows": 0,
+      "recomputed_reference_flagged_count": 834,
+      "saved_artifact_flagged_count": 834
+    },
+    "sweep": [
+      {
+        "expected_rate": 0.02,
+        "flag_rate": 0.02,
+        "flagged_count": 100,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.119904,
+        "threshold": 0.0083327931
+      },
+      {
+        "expected_rate": 0.05,
+        "flag_rate": 0.05,
+        "flagged_count": 250,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.29976,
+        "threshold": -0.0408219496
+      },
+      {
+        "expected_rate": 0.1,
+        "flag_rate": 0.1,
+        "flagged_count": 500,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.59952,
+        "threshold": -0.0760771146
+      },
+      {
+        "expected_rate": 0.1667,
+        "flag_rate": 0.1668,
+        "flagged_count": 834,
+        "is_reference": true,
+        "jaccard_vs_reference": 1.0,
+        "threshold": -0.1035405795
+      },
+      {
+        "expected_rate": 0.2,
+        "flag_rate": 0.2,
+        "flagged_count": 1000,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.834,
+        "threshold": -0.1124334487
+      },
+      {
+        "expected_rate": 0.25,
+        "flag_rate": 0.25,
+        "flagged_count": 1250,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.6672,
+        "threshold": -0.1228926269
+      },
+      {
+        "expected_rate": 0.3,
+        "flag_rate": 0.3,
+        "flagged_count": 1500,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.556,
+        "threshold": -0.1308882291
+      }
+    ],
+    "threshold_interpretation": "flag counts/rates are a direct consequence of the chosen expected-rate operating point under the frozen quantile policy; they are NOT a measured real-world anomaly prevalence"
+  },
+  "financial-statements": {
+    "boundary_sensitive_flagged_only_above_0_02": 44,
+    "core_flagged_at_0_02": 4,
+    "dataset_id": "financial-statements",
+    "label_gated_metrics": {
+      "available": false,
+      "note": "precision/recall/F1/ROC-AUC/PR-AUC require independent ground-truth labels; none exist for this dataset, so none are computed or reported"
+    },
+    "n_observations": 160,
+    "reference": {
+      "expected_rate": 0.16666666666666666,
+      "flag_rate": 0.16875,
+      "flagged_count": 27,
+      "threshold": -0.0451328817
+    },
+    "reproduction_check": {
+      "exact_match": true,
+      "mismatched_rows": 0,
+      "recomputed_reference_flagged_count": 27,
+      "saved_artifact_flagged_count": 27
+    },
+    "sweep": [
+      {
+        "expected_rate": 0.02,
+        "flag_rate": 0.025,
+        "flagged_count": 4,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.148148,
+        "threshold": 0.1040516274
+      },
+      {
+        "expected_rate": 0.05,
+        "flag_rate": 0.05,
+        "flagged_count": 8,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.296296,
+        "threshold": 0.054532752
+      },
+      {
+        "expected_rate": 0.1,
+        "flag_rate": 0.1,
+        "flagged_count": 16,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.592593,
+        "threshold": -0.0045520405
+      },
+      {
+        "expected_rate": 0.1667,
+        "flag_rate": 0.16875,
+        "flagged_count": 27,
+        "is_reference": true,
+        "jaccard_vs_reference": 1.0,
+        "threshold": -0.0451328817
+      },
+      {
+        "expected_rate": 0.2,
+        "flag_rate": 0.2,
+        "flagged_count": 32,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.84375,
+        "threshold": -0.0608977371
+      },
+      {
+        "expected_rate": 0.25,
+        "flag_rate": 0.25,
+        "flagged_count": 40,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.675,
+        "threshold": -0.076509075
+      },
+      {
+        "expected_rate": 0.3,
+        "flag_rate": 0.3,
+        "flagged_count": 48,
+        "is_reference": false,
+        "jaccard_vs_reference": 0.5625,
+        "threshold": -0.0895282998
+      }
+    ],
+    "threshold_interpretation": "flag counts/rates are a direct consequence of the chosen expected-rate operating point under the frozen quantile policy; they are NOT a measured real-world anomaly prevalence"
+  }
+}
